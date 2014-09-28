@@ -14,6 +14,9 @@ astroids.p2p.peer.on('connection', function(conn) {
 		if (data.match('helloIam*')) {
 			astroids.p2p.connectBackTo(data);
 		}
+		else if (astroids.p2p._receiverCb && data.match('text:*')) {
+			astroids.p2p._receiverCb(data.slice('text:'.length));
+		}
 	});
 });
 
@@ -45,5 +48,10 @@ astroids.p2p.onPingOtherPlayer = function() {
 // send string via webRTC
 astroids.p2p.sendText = function(text) {
 	console.log('sending text: ' + text);
-	astroids.p2p.connection.send(text);
+	astroids.p2p.connection.send('text:' + text);
+}
+
+astroids.p2p.receiveText = function(callback) {
+	console.log('registering for text receiving');
+	astroids.p2p._receiverCb = callback;
 }
