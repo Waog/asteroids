@@ -5,9 +5,21 @@
 <title>Astroids Client</title>
 </head>
 <body>
-    Our Astroids Client
-    
+    Our Astroids Client: Player A
+
+    <script type="text/javascript">
+                    var astroids = {};
+                    astroids.playerId = 'playerA';
+                    astroids.otherPlayerId = 'playerB';
+                </script>
+
     <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
-    <script src="mainA.js"></script>
+    <script src="main.js"></script>
+
+    <form action="input_button.htm">
+        <input type="button" name="pingOtherPlayer"
+            value="ping other player"
+            onclick="astroids.onPingOtherPlayer()">
+    </form>
 </body>
 </html>
