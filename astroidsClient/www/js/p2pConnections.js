@@ -39,12 +39,6 @@ astroids.p2p.connectBackTo = function(data) {
 			});
 }
 
-// send ping via webRTC
-astroids.p2p.onPingOtherPlayer = function() {
-	console.log('i was clicked!');
-	astroids.p2p.connection.send('ping from ' + astroids.playerId);
-}
-
 // send string via webRTC
 astroids.p2p.sendText = function(text) {
 	console.log('sending text: ' + text);
