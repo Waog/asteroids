@@ -8,5 +8,11 @@ function preload() {
 }
 
 function create() {
-    game.add.sprite(0, 0, 'bg');
+    var image = game.add.sprite(0, 0, 'bg');
+    image.inputEnabled = true;
+    image.events.onInputDown.add(listener, this);
+}
+
+function listener() {
+    astroids.p2p.sendText('I am a steroids game sending text');
 }
