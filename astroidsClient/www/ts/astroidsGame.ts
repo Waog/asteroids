@@ -10,11 +10,16 @@ function preload() {
 }
 
 function create() {
+    astroids.p2p.receiveText(onTextReceived);
     var image = game.add.sprite(0, 0, 'bg');
     image.inputEnabled = true;
-    image.events.onInputDown.add(listener, this);
+    image.events.onInputDown.add(onClick, this);
 }
 
-function listener() {
+function onClick() {
     astroids.p2p.sendText('I am a steroids game sending text');
+}
+
+function onTextReceived(text: string) {
+    console.log('game received ' + text);
 }

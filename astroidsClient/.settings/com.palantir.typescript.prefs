@@ -1,3 +1,4 @@
+build.path.exportedFolder=
 build.path.sourceFolder=www/ts
 compiler.codeGenTarget=ECMASCRIPT3
 compiler.compileOnSave=true
@@ -6,7 +7,7 @@ compiler.mapSourceFiles=true
 compiler.moduleGenTarget=UNSPECIFIED
 compiler.noImplicitAny=true
 compiler.noLib=false
-compiler.outputDirOption=www/js
+compiler.outputDirOption=www/js/gen
 compiler.outputFileOption=astroidsGame.js
 compiler.removeComments=false
 eclipse.preferences.version=1
