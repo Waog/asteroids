@@ -1,6 +1,8 @@
+declare var astroids: any;
+
 var game = new Phaser.Game(1200, 500, Phaser.CANVAS, 'astroids', {
-    preload: preload,
-    create: create
+    preload : preload,
+    create : create
 });
 
 function preload() {
@@ -16,4 +18,3 @@ function create() {
 function listener() {
     astroids.p2p.sendText('I am a steroids game sending text');
 }
-//# sourceMappingURL=astroidsGame.js.map
