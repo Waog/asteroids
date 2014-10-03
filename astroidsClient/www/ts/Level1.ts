@@ -13,6 +13,8 @@ module Astroids {
         }
 
         create() {
+            this.game.physics.startSystem(Phaser.Physics.ARCADE);
+            
             astroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
 
             var bg = this.add.sprite(0, 0, 'bg');

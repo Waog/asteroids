@@ -9,7 +9,7 @@ module Astroids {
 
         private static UPDATE_ME_KEY: string = 'playerUpdateMe';
 
-        private static ROTATION_SPEED: number = 0.2;
+        private static ROTATION_SPEED: number = 200;
 
         leftKey: Phaser.Key;
         rightKey: Phaser.Key;
@@ -18,6 +18,8 @@ module Astroids {
             super(game, x, y, 'player');
             this.anchor.setTo(0.5, 0.5);
             game.add.existing(this);
+
+            game.physics.enable(this, Phaser.Physics.ARCADE);
 
             if (this.isLocal) {
                 this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -29,22 +31,25 @@ module Astroids {
 
         update() {
             if (this.isLocal) {
+
+                this.body.angularVelocity = 0;
+
                 if (this.leftKey.isDown) {
-                    this.angle -= Player.ROTATION_SPEED * this.game.time.elapsed;
+                    this.body.angularVelocity = -Player.ROTATION_SPEED;
                 }
                 else if (this.rightKey.isDown) {
-                    this.angle += Player.ROTATION_SPEED * this.game.time.elapsed;
+                    this.body.angularVelocity = Player.ROTATION_SPEED;
                 }
-                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';');
+                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.rotation + ';');
             }
         }
 
         onUpdateMe(text: string) {
             console.log('player received ' + text);
             var messageArray = text.split(';');
-            var messageAngle: number = +messageArray[0];
+            var messageRotation: number = +messageArray[0];
 
-            this.angle = messageAngle;
+            this.angle = messageRotation;
         }
     }
 }
