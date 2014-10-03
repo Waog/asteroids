@@ -10,7 +10,8 @@ module Astroids {
         private static UPDATE_ME_KEY: string = 'playerUpdateMe';
 
         private static ROTATION_SPEED: number = 200;
-        private static SPEED: number = 300;
+        private static MAX_SPEED: number = 300;
+        private static ACCELERATION: number = 300;
 
         constructor(game: Phaser.Game, x: number, y: number, private isLocal: boolean) {
             super(game, x, y, 'player');
@@ -19,6 +20,7 @@ module Astroids {
 
             game.physics.enable(this, Phaser.Physics.ARCADE);
             this.body.drag.set(300);
+            this.body.maxVelocity.set(Player.MAX_SPEED);
 
             if (!this.isLocal) {
                 astroids.p2p.receiveText(Player.UPDATE_ME_KEY, this.onUpdateMe, this);
@@ -29,6 +31,7 @@ module Astroids {
             if (this.isLocal) {
 
                 this.body.angularVelocity = 0;
+                this.body.acceleration.set(0);
 
                 if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                     this.body.angularVelocity = -Player.ROTATION_SPEED;
@@ -38,7 +41,8 @@ module Astroids {
                 }
 
                 if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-                    this.game.physics.arcade.velocityFromAngle(this.angle, Player.SPEED, this.body.velocity);
+                    this.game.physics.arcade.accelerationFromRotation(this.rotation, 
+                        Player.ACCELERATION, this.body.acceleration);
                 }
                 astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
             }
