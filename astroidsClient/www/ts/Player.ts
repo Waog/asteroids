@@ -10,9 +10,7 @@ module Astroids {
         private static UPDATE_ME_KEY: string = 'playerUpdateMe';
 
         private static ROTATION_SPEED: number = 200;
-
-        leftKey: Phaser.Key;
-        rightKey: Phaser.Key;
+        private static SPEED: number = 300;
 
         constructor(game: Phaser.Game, x: number, y: number, private isLocal: boolean) {
             super(game, x, y, 'player');
@@ -20,11 +18,9 @@ module Astroids {
             game.add.existing(this);
 
             game.physics.enable(this, Phaser.Physics.ARCADE);
+            this.body.drag.set(300);
 
-            if (this.isLocal) {
-                this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-                this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-            } else {
+            if (!this.isLocal) {
                 astroids.p2p.receiveText(Player.UPDATE_ME_KEY, this.onUpdateMe, this);
             }
         }
@@ -34,13 +30,17 @@ module Astroids {
 
                 this.body.angularVelocity = 0;
 
-                if (this.leftKey.isDown) {
+                if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                     this.body.angularVelocity = -Player.ROTATION_SPEED;
                 }
-                else if (this.rightKey.isDown) {
+                else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
                     this.body.angularVelocity = Player.ROTATION_SPEED;
                 }
-                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.rotation + ';');
+
+                if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+                    this.game.physics.arcade.velocityFromAngle(this.angle, Player.SPEED, this.body.velocity);
+                }
+                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
             }
         }
 
@@ -48,8 +48,12 @@ module Astroids {
             console.log('player received ' + text);
             var messageArray = text.split(';');
             var messageRotation: number = +messageArray[0];
+            var messageX: number = +messageArray[1];
+            var messageY: number = +messageArray[2];
 
             this.angle = messageRotation;
+            this.x = messageX;
+            this.y = messageY;
         }
     }
 }
