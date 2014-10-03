@@ -15,7 +15,7 @@ astroids.p2p.peer.on('connection', function(conn) {
 			astroids.p2p.connectBackTo(data);
 		}
 		else if (astroids.p2p._receiverCb && data.match('text:*')) {
-			astroids.p2p._receiverCb(data.slice('text:'.length));
+			astroids.p2p._receiverCb.call(astroids.p2p._receiverCbContext, data.slice('text:'.length));
 		}
 	});
 });
@@ -45,7 +45,8 @@ astroids.p2p.sendText = function(text) {
 	astroids.p2p.connection.send('text:' + text);
 }
 
-astroids.p2p.receiveText = function(callback) {
+astroids.p2p.receiveText = function(callback, cbContext) {
 	console.log('registering for text receiving');
 	astroids.p2p._receiverCb = callback;
+	astroids.p2p._receiverCbContext = cbContext;
 }
