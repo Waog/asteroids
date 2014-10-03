@@ -33,7 +33,7 @@ module Astroids {
                 else if (this.rightKey.isDown) {
                     this.angle += 3;
                 }
-//                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';');
+                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';');
             }
         }
 
