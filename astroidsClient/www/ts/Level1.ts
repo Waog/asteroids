@@ -18,8 +18,6 @@ module Astroids {
             astroids.p2p.receiveText(this.onTextReceived, this);
 
             var bg = this.add.sprite(0, 0, 'bg');
-            bg.inputEnabled = true;
-            bg.events.onInputDown.add(this.onClick, this);
 
             var randX = this.game.rnd.realInRange(0, this.world.width * 0.95);
             var randY = this.game.rnd.realInRange(0, this.world.height * 0.95);
@@ -55,10 +53,6 @@ module Astroids {
                 this.otherPlayer.anchor.set(0.5, 0.5);
             }
             this.otherPlayer.angle = messageAngle;
-        }
-
-        onClick() {
-            astroids.p2p.sendText('I am a steroids game sending text');
         }
     }
 } 
