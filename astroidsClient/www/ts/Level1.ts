@@ -16,11 +16,9 @@ module Astroids {
             astroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
 
             var bg = this.add.sprite(0, 0, 'bg');
+            this.createLocalPlayer();
+            astroids.p2p.onHandshakeFinished(this.informOthersAboutPlayerCreation, this);
 
-            var randX = this.game.rnd.realInRange(0, this.world.width * 0.3);
-            var randY = this.game.rnd.realInRange(0, this.world.height * 0.3);
-            this.localPlayer = new Player(this.game, randX, randY, true);
-            astroids.p2p.sendText(Level1.CREATE_PLAYER_KEY, randX + ';' + randY + ';');
         }
 
         onNewPlayer(text: string) {
@@ -29,9 +27,17 @@ module Astroids {
             var messageX: number = +messageArray[0];
             var messageY: number = +messageArray[1];
             new Player(this.game, messageX, messageY, false);
+        }
 
-            astroids.p2p.sendText(Level1.CREATE_PLAYER_KEY,
-                this.localPlayer.x + ';' + this.localPlayer.y + ';');
+        createLocalPlayer() {
+            var randX = this.game.rnd.realInRange(0, this.world.width * 0.3);
+            var randY = this.game.rnd.realInRange(0, this.world.height * 0.3);
+            this.localPlayer = new Player(this.game, randX, randY, true);
+        }
+
+        informOthersAboutPlayerCreation() {
+            astroids.p2p.sendText(Level1.CREATE_PLAYER_KEY, this.localPlayer.x + ';'
+                + this.localPlayer.y + ';');
         }
     }
 } 
