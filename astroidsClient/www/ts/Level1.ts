@@ -3,56 +3,35 @@ module Astroids {
 
     export class Level1 extends Phaser.State {
 
-        player: Phaser.Sprite;
+        localPlayer: Player;
 
-        otherPlayer: Phaser.Sprite;
-        leftKey: Phaser.Key;
-        rightKey: Phaser.Key;
+        private static CREATE_PLAYER_KEY: string = 'createPlayer';
 
         preload() {
             this.load.image('bg', 'assets/bg.png');
-            this.load.image('player', 'assets/player040.png');
+            Player.preload(this.game);
         }
 
         create() {
-            astroids.p2p.receiveText(this.onTextReceived, this);
+            astroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
 
             var bg = this.add.sprite(0, 0, 'bg');
 
-            var randX = this.game.rnd.realInRange(0, this.world.width * 0.95);
-            var randY = this.game.rnd.realInRange(0, this.world.height * 0.95);
-            this.player = this.add.sprite(randX, randY, 'player');
-            this.player.anchor.set(0.5, 0.5);
-
-
-            this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+            var randX = this.game.rnd.realInRange(0, this.world.width * 0.3);
+            var randY = this.game.rnd.realInRange(0, this.world.height * 0.3);
+            this.localPlayer = new Player(this.game, randX, randY, true);
+            astroids.p2p.sendText(Level1.CREATE_PLAYER_KEY, randX + ';' + randY + ';');
         }
 
-        update() {
-
-            if (this.leftKey.isDown) {
-                this.player.angle -= 3;
-            }
-            else if (this.rightKey.isDown) {
-                this.player.angle += 3;
-            }
-            astroids.p2p.sendText(this.player.position.x + ';' + this.player.position.y + ';' + this.player.angle + ';');
-
-        }
-
-        onTextReceived(text: string) {
-            console.log('game received ' + text);
+        onNewPlayer(text: string) {
+            console.log('level 1 received ' + text);
             var messageArray = text.split(';');
             var messageX: number = +messageArray[0];
             var messageY: number = +messageArray[1];
-            var messageAngle: number = +messageArray[2];
+            new Player(this.game, messageX, messageY, false);
 
-            if (!this.otherPlayer) {
-                this.otherPlayer = this.add.sprite(messageX, messageY, 'player');
-                this.otherPlayer.anchor.set(0.5, 0.5);
-            }
-            this.otherPlayer.angle = messageAngle;
+            astroids.p2p.sendText(Level1.CREATE_PLAYER_KEY,
+                this.localPlayer.x + ';' + this.localPlayer.y + ';');
         }
     }
 } 
