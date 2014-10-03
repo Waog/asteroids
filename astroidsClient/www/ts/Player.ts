@@ -7,7 +7,9 @@ module Astroids {
             game.load.image('player', 'assets/player040.png');
         }
 
-        private static UPDATE_ME_KEY = 'playerUpdateMe';
+        private static UPDATE_ME_KEY: string = 'playerUpdateMe';
+
+        private static ROTATION_SPEED: number = 0.2;
 
         leftKey: Phaser.Key;
         rightKey: Phaser.Key;
@@ -28,10 +30,10 @@ module Astroids {
         update() {
             if (this.isLocal) {
                 if (this.leftKey.isDown) {
-                    this.angle -= 3;
+                    this.angle -= Player.ROTATION_SPEED * this.game.time.elapsed;
                 }
                 else if (this.rightKey.isDown) {
-                    this.angle += 3;
+                    this.angle += Player.ROTATION_SPEED * this.game.time.elapsed;
                 }
                 astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';');
             }
