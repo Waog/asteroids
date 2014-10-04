@@ -41,10 +41,12 @@ module Astroids {
                 }
 
                 if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-                    this.game.physics.arcade.accelerationFromRotation(this.rotation, 
+                    this.game.physics.arcade.accelerationFromRotation(this.rotation,
                         Player.ACCELERATION, this.body.acceleration);
                 }
                 astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
+                
+                this.screenWrap();
             }
         }
 
@@ -58,6 +60,22 @@ module Astroids {
             this.angle = messageRotation;
             this.x = messageX;
             this.y = messageY;
+        }
+
+        screenWrap() {
+            if (this.x < 0) {
+                this.x = this.game.width;
+            }
+            else if (this.x > this.game.width) {
+                this.x = 0;
+            }
+
+            if (this.y < 0) {
+                this.y = this.game.height;
+            }
+            else if (this.y > this.game.height) {
+                this.y = 0;
+            }
         }
     }
 }
