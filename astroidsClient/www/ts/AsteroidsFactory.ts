@@ -35,10 +35,11 @@ module Astroids {
         pushUpdate() {
             for (var i = 0; i < this.asteroidsList.length; i++) {
                 var asteroid: Asteroid = this.asteroidsList[i];
-                var msg: any = {};
-                msg.x = asteroid.x;
-                msg.y = asteroid.y;
-                msg.rotation = asteroid.rotation;
+                var msg: ICreateAsteroidsMsg = {
+                    x: asteroid.x,
+                    y: asteroid.y,
+                    rotation: asteroid.rotation
+                };
                 astroids.p2p.sendText(AsteroidsFactory.CREATE_ASTEROIDS_KEY, JSON.stringify(msg));
             }
         }
