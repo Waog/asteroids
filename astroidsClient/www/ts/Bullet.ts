@@ -7,10 +7,15 @@ module Astroids {
             game.load.image('bullet', 'assets/player020.png');
         }
 
+        private static KILL_KEY_PREFIX: string = 'BULLET_KILL_KEY_';
         private static VELOCITY: number = 400;
         private static LIFESPAN: number = 500;
 
-        constructor(game: Phaser.Game, x: number, y: number, rotation: number) {
+        private isLocal: boolean;
+
+        constructor(game: Phaser.Game, x: number, y: number, rotation: number,
+            private asteroidsGroup: Phaser.Group, private remoteId: string = null) {
+
             super(game, x, y, 'bullet');
             this.anchor.setTo(0.5, 0.5);
             game.add.existing(this);
@@ -19,10 +24,35 @@ module Astroids {
             this.game.physics.arcade.velocityFromRotation(rotation,
                 Bullet.VELOCITY, this.body.velocity);
             this.lifespan = Bullet.LIFESPAN;
+
+            if (!this.remoteId) {
+                this.isLocal = true;
+                this.remoteId = "bullet_" + Math.random();
+            } else {
+                this.isLocal = false;
+            }
+
+            if (!this.isLocal) {
+                astroids.p2p.receiveText(Bullet.KILL_KEY_PREFIX + this.remoteId, this.kill, this);
+            }
+        }
+
+        getRemoteId(): string {
+            return this.remoteId;
         }
 
         update() {
+            if (this.isLocal) {
+                this.game.physics.arcade.collide(this, this.asteroidsGroup, this.onAsteroidCollision, null, this);
+            }
+
             this.screenWrap();
+        }
+
+        onAsteroidCollision(thisLocalBullet: Bullet, asteroid: Asteroid) {
+            asteroid.kill();
+            astroids.p2p.sendText(Bullet.KILL_KEY_PREFIX + this.remoteId, 'noValue');
+            this.kill();
         }
 
         screenWrap() {

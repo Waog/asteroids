@@ -12,7 +12,7 @@ module Astroids {
 
         private static UPDATE_ME_KEY: string = 'playerUpdateMe';
         private static FIRE_BULLET_KEY: string = 'playerFireBullet';
-        private static KILL_KEY: string = Player + 'KILL_KEY';
+        private static KILL_KEY: string = 'PLAYER_KILL_KEY';
         private static ROTATION_SPEED: number = 200;
         private static MAX_SPEED: number = 300;
         private static ACCELERATION: number = 300;
@@ -98,10 +98,13 @@ module Astroids {
             if (this.game.time.now > this.bulletReactivationTime) {
                 var x: number = this.body.x + this.width / 2;
                 var y: number = this.body.y + this.height / 2;
-                var bullet: Bullet = new Bullet(this.game, x, y, this.rotation);
+
+                var bullet: Bullet = new Bullet(this.game, x, y, this.rotation,
+                    this.asteroidsGroup);
                 this.bulletReactivationTime = this.game.time.now + Player.BULLET_COOLDOWN;
 
-                astroids.p2p.sendText(Player.FIRE_BULLET_KEY, x + ';' + y + ';' + this.rotation + ';');
+                astroids.p2p.sendText(Player.FIRE_BULLET_KEY, x + ';' + y + ';'
+                    + this.rotation + ';' + bullet.getRemoteId() + ';');
             }
         }
 
@@ -111,10 +114,12 @@ module Astroids {
             var messageX: number = +messageArray[0];
             var messageY: number = +messageArray[1];
             var messageRotation: number = +messageArray[2];
-            var bullet: Bullet = new Bullet(this.game, messageX, messageY, messageRotation);
+            var messageRemoteId: string = messageArray[3];
+            var bullet: Bullet = new Bullet(this.game, messageX, messageY, messageRotation,
+                null, messageRemoteId);
         }
 
-        kill() : Phaser.Sprite {
+        kill(): Phaser.Sprite {
             if (this.isLocal) {
                 astroids.p2p.sendText(Player.KILL_KEY, 'noValue');
             }
