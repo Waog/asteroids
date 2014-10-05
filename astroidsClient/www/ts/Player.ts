@@ -1,6 +1,8 @@
 module Astroids {
     declare var astroids: any;
 
+    interface IKill { }
+
     export class Player extends Phaser.Sprite {
 
         static preload(game: Phaser.Game) {
@@ -10,6 +12,7 @@ module Astroids {
 
         private static UPDATE_ME_KEY: string = 'playerUpdateMe';
         private static FIRE_BULLET_KEY: string = 'playerFireBullet';
+        private static KILL_KEY: string = Player + 'KILL_KEY';
         private static ROTATION_SPEED: number = 200;
         private static MAX_SPEED: number = 300;
         private static ACCELERATION: number = 300;
@@ -18,9 +21,9 @@ module Astroids {
 
         private bulletReactivationTime: number = 0;
 
-        constructor(game: Phaser.Game, x: number, y: number, private isLocal: boolean, 
+        constructor(game: Phaser.Game, x: number, y: number, private isLocal: boolean,
             private asteroidsGroup: Phaser.Group) {
-            
+
             super(game, x, y, 'player');
             this.anchor.setTo(0.5, 0.5);
             game.add.existing(this);
@@ -29,6 +32,7 @@ module Astroids {
             this.body.maxVelocity.set(Player.MAX_SPEED);
 
             if (!this.isLocal) {
+                astroids.p2p.receiveText(Player.KILL_KEY, this.kill, this);
                 astroids.p2p.receiveText(Player.UPDATE_ME_KEY, this.onUpdateMe, this);
                 astroids.p2p.receiveText(Player.FIRE_BULLET_KEY, this.onRemoteFireBullet, this);
             }
@@ -38,7 +42,7 @@ module Astroids {
             if (this.isLocal) {
 
                 this.game.physics.arcade.collide(this, this.asteroidsGroup, this.kill, null, this);
-                
+
                 this.body.angularVelocity = 0;
                 this.body.acceleration.set(0);
 
@@ -63,7 +67,7 @@ module Astroids {
         }
 
         onUpdateMe(text: string) {
-//            console.log('player received ' + text);
+            //            console.log('player received ' + text);
             var messageArray = text.split(';');
             var messageRotation: number = +messageArray[0];
             var messageX: number = +messageArray[1];
@@ -73,7 +77,6 @@ module Astroids {
             this.x = messageX;
             this.y = messageY;
         }
-
 
         screenWrap() {
             if (this.x < 0) {
@@ -103,12 +106,19 @@ module Astroids {
         }
 
         onRemoteFireBullet(text: string) {
-//            console.log('player received remoteFireBullet ' + text);
+            //            console.log('player received remoteFireBullet ' + text);
             var messageArray = text.split(';');
             var messageX: number = +messageArray[0];
             var messageY: number = +messageArray[1];
             var messageRotation: number = +messageArray[2];
             var bullet: Bullet = new Bullet(this.game, messageX, messageY, messageRotation);
+        }
+
+        kill() : Phaser.Sprite {
+            if (this.isLocal) {
+                astroids.p2p.sendText(Player.KILL_KEY, 'noValue');
+            }
+            return super.kill();
         }
     }
 }
