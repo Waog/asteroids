@@ -8,7 +8,7 @@ module Astroids {
         }
 
         private static VELOCITY: number = 400;
-        private static LIFESPAN: number = 2000;
+        private static LIFESPAN: number = 500;
 
         constructor(game: Phaser.Game, x: number, y: number, rotation: number) {
             super(game, x, y, 'bullet');

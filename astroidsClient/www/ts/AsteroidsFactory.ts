@@ -3,7 +3,7 @@ module Astroids {
 
     export class AsteroidsFactory {
 
-        private static CREATE_ASTEROIDS_KEY: string = 'createPlayer';
+        private static CREATE_ASTEROIDS_KEY: string = 'CREATE_ASTEROIDS_KEY';
 
         asteroidsList: Asteroid[] = [];
 
@@ -14,7 +14,7 @@ module Astroids {
         constructor(private game: Phaser.Game) {
             astroids.p2p.receiveText(AsteroidsFactory.CREATE_ASTEROIDS_KEY,
                 this.onRemoteAsteroidCreation, this);
-            
+
             var randX = this.game.rnd.realInRange(0, this.game.world.width * 0.3);
             var randY = this.game.rnd.realInRange(0, this.game.world.height * 0.3);
             var randRot = this.game.rnd.realInRange(0, 2 * Math.PI);
@@ -30,7 +30,10 @@ module Astroids {
         }
 
         pushUpdate() {
-            for (var asteroid in this.asteroidsList) {
+            for (var i = 0; this.asteroidsList.length; i++) {
+                var asteroid: Asteroid = this.asteroidsList[i];
+                console.log('asteroidFac.pushUpdate(): ', AsteroidsFactory.CREATE_ASTEROIDS_KEY,
+                    asteroid.x + ';' + asteroid.y + ';' + asteroid.rotation + ';');
                 astroids.p2p.sendText(AsteroidsFactory.CREATE_ASTEROIDS_KEY,
                     asteroid.x + ';' + asteroid.y + ';' + asteroid.rotation + ';');
             }
