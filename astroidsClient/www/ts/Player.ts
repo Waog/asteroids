@@ -53,7 +53,7 @@ module Astroids {
                 if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
                     this.fireBullet();
                 }
-//                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
+                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
 
                 this.screenWrap();
             }
