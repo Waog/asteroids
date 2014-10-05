@@ -3,8 +3,6 @@ module Astroids {
 
     export class AsteroidsFactory {
 
-        private static CREATE_ASTEROIDS_KEY: string = 'CREATE_ASTEROIDS_KEY';
-
         asteroidsList: Asteroid[] = [];
 
         static preload(game: Phaser.Game) {
@@ -12,7 +10,7 @@ module Astroids {
         }
 
         constructor(private game: Phaser.Game) {
-            astroids.p2p.receiveText(AsteroidsFactory.CREATE_ASTEROIDS_KEY,
+            astroids.p2p.receiveText(AsteroidsFactory.CreateAstroidsMsg.KEY,
                 this.onRemoteAsteroidCreation, this);
 
             var randX = this.game.rnd.realInRange(0, this.game.world.width * 0.3);
@@ -22,20 +20,38 @@ module Astroids {
         }
 
         onRemoteAsteroidCreation(text: string) {
-            var messageArray = text.split(';');
-            var messageX: number = +messageArray[0];
-            var messageY: number = +messageArray[1];
-            var messageRotation: number = +messageArray[2];
-            new Asteroid(this.game, messageX, messageY, messageRotation);
+            var msg: AsteroidsFactory.CreateAstroidsMsg =
+                    AsteroidsFactory.CreateAstroidsMsg.fromText(text);
+            new Asteroid(this.game, msg.x, msg.y, msg.rotation);
         }
 
         pushUpdate() {
             for (var i = 0; this.asteroidsList.length; i++) {
                 var asteroid: Asteroid = this.asteroidsList[i];
-                console.log('asteroidFac.pushUpdate(): ', AsteroidsFactory.CREATE_ASTEROIDS_KEY,
-                    asteroid.x + ';' + asteroid.y + ';' + asteroid.rotation + ';');
-                astroids.p2p.sendText(AsteroidsFactory.CREATE_ASTEROIDS_KEY,
-                    asteroid.x + ';' + asteroid.y + ';' + asteroid.rotation + ';');
+                var msg: AsteroidsFactory.CreateAstroidsMsg =
+                    new AsteroidsFactory.CreateAstroidsMsg(
+                        asteroid.x, asteroid.y, asteroid.rotation);
+                astroids.p2p.sendText(AsteroidsFactory.CreateAstroidsMsg.KEY,
+                    msg.getMsgText());
+            }
+        }
+    }
+
+    export module AsteroidsFactory {
+        export class CreateAstroidsMsg {
+
+            public static KEY: string = 'CREATE_ASTEROIDS_MSG_KEY';
+
+            static fromText(text: string) {
+                var messageArray = text.split(';');
+                return new CreateAstroidsMsg(+messageArray[0], +messageArray[1], +messageArray[2]);
+            }
+
+            constructor(public x: number, public y: number, public rotation: number) {
+            }
+
+            getMsgText() {
+                return this.x + ';' + this.y + ';' + this.rotation + ';';
             }
         }
     }
