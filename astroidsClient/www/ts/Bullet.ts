@@ -8,13 +8,13 @@ module Astroids {
         }
 
         private static UPDATE_ME_KEY_PREFIX: string = 'bulletUpdateMe';
+        private static VELOCITY: number = 400;
+        private static LIFESPAN: number = 2000;
+        
         private static bulletCounter: number = 0;
 
-        private static BULLET_SPEED: number = 400;
-        private static BULLET_COOLDOWN: number = 50;
-
-        private bulletReactivationTime: number = 0;
         private id: number = 0;
+        
 
 
         constructor(game: Phaser.Game, x: number, y: number, rotation: number, private isLocal: boolean) {
@@ -24,9 +24,8 @@ module Astroids {
             game.physics.enable(this, Phaser.Physics.ARCADE);
             this.rotation = rotation;
             this.game.physics.arcade.velocityFromRotation(rotation,
-                Bullet.BULLET_SPEED, this.body.velocity);
-            this.lifespan = 2000;
-
+                Bullet.VELOCITY, this.body.velocity);
+            this.lifespan = Bullet.LIFESPAN;
             this.id = Bullet.bulletCounter++;
 
             if (!this.isLocal) {
@@ -36,10 +35,8 @@ module Astroids {
 
         update() {
             if (this.isLocal) {
-
                 astroids.p2p.sendText(Bullet.UPDATE_ME_KEY_PREFIX + this.id,
                     this.x + ';' + this.y + ';');
-
                 this.screenWrap();
             }
         }
