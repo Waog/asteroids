@@ -53,14 +53,14 @@ module Astroids {
                 if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
                     this.fireBullet();
                 }
-                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
+//                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
 
                 this.screenWrap();
             }
         }
 
         onUpdateMe(text: string) {
-            console.log('player received ' + text);
+//            console.log('player received ' + text);
             var messageArray = text.split(';');
             var messageRotation: number = +messageArray[0];
             var messageX: number = +messageArray[1];
@@ -100,7 +100,7 @@ module Astroids {
         }
 
         onRemoteFireBullet(text: string) {
-            console.log('player received remoteFireBullet ' + text);
+//            console.log('player received remoteFireBullet ' + text);
             var messageArray = text.split(';');
             var messageX: number = +messageArray[0];
             var messageY: number = +messageArray[1];
