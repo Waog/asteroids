@@ -9,11 +9,12 @@ module Astroids {
 
         private static VELOCITY: number = 50;
 
-        constructor(game: Phaser.Game, x: number, y: number, rotation: number) {
+        constructor(game: Phaser.Game, x: number, y: number, rotation: number,
+            asteroidsGroup: Phaser.Group) {
+            
             super(game, x, y, 'asteroid');
             this.anchor.setTo(0.5, 0.5);
-            game.add.existing(this);
-            game.physics.enable(this, Phaser.Physics.ARCADE);
+            asteroidsGroup.add(this);
             this.rotation = rotation;
             this.game.physics.arcade.velocityFromRotation(rotation,
                 Asteroid.VELOCITY, this.body.velocity);

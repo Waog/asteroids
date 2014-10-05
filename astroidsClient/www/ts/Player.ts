@@ -18,7 +18,9 @@ module Astroids {
 
         private bulletReactivationTime: number = 0;
 
-        constructor(game: Phaser.Game, x: number, y: number, private isLocal: boolean) {
+        constructor(game: Phaser.Game, x: number, y: number, private isLocal: boolean, 
+            private asteroidsGroup: Phaser.Group) {
+            
             super(game, x, y, 'player');
             this.anchor.setTo(0.5, 0.5);
             game.add.existing(this);
@@ -35,6 +37,8 @@ module Astroids {
         update() {
             if (this.isLocal) {
 
+                this.game.physics.arcade.collide(this, this.asteroidsGroup, this.kill, null, this);
+                
                 this.body.angularVelocity = 0;
                 this.body.acceleration.set(0);
 
@@ -44,7 +48,6 @@ module Astroids {
                 else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
                     this.body.angularVelocity = Player.ROTATION_SPEED;
                 }
-
                 if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
                     this.game.physics.arcade.accelerationFromRotation(this.rotation,
                         Player.ACCELERATION, this.body.acceleration);
