@@ -9,6 +9,7 @@ module Astroids {
         }
 
         private static UPDATE_ME_KEY: string = 'playerUpdateMe';
+        private static FIRE_BULLET_KEY: string = 'playerFireBullet';
         private static ROTATION_SPEED: number = 200;
         private static MAX_SPEED: number = 300;
         private static ACCELERATION: number = 300;
@@ -27,6 +28,7 @@ module Astroids {
 
             if (!this.isLocal) {
                 astroids.p2p.receiveText(Player.UPDATE_ME_KEY, this.onUpdateMe, this);
+                astroids.p2p.receiveText(Player.FIRE_BULLET_KEY, this.onRemoteFireBullet, this);
             }
         }
 
@@ -69,6 +71,7 @@ module Astroids {
             this.y = messageY;
         }
 
+
         screenWrap() {
             if (this.x < 0) {
                 this.x = this.game.width;
@@ -87,10 +90,22 @@ module Astroids {
 
         fireBullet() {
             if (this.game.time.now > this.bulletReactivationTime) {
-                var bullet: Bullet = new Bullet(this.game, this.body.x + this.width / 2,
-                    this.body.y + this.height / 2, this.rotation, true);
+                var x: number = this.body.x + this.width / 2;
+                var y: number = this.body.y + this.height / 2;
+                var bullet: Bullet = new Bullet(this.game, x, y, this.rotation);
                 this.bulletReactivationTime = this.game.time.now + Player.BULLET_COOLDOWN;
+
+                astroids.p2p.sendText(Player.FIRE_BULLET_KEY, x + ';' + y + ';' + this.rotation + ';');
             }
+        }
+
+        onRemoteFireBullet(text: string) {
+            console.log('player received remoteFireBullet ' + text);
+            var messageArray = text.split(';');
+            var messageX: number = +messageArray[0];
+            var messageY: number = +messageArray[1];
+            var messageRotation: number = +messageArray[2];
+            var bullet: Bullet = new Bullet(this.game, messageX, messageY, messageRotation);
         }
     }
 }

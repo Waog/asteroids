@@ -7,17 +7,10 @@ module Astroids {
             game.load.image('bullet', 'assets/player020.png');
         }
 
-        private static UPDATE_ME_KEY_PREFIX: string = 'bulletUpdateMe';
         private static VELOCITY: number = 400;
         private static LIFESPAN: number = 2000;
-        
-        private static bulletCounter: number = 0;
 
-        private id: number = 0;
-        
-
-
-        constructor(game: Phaser.Game, x: number, y: number, rotation: number, private isLocal: boolean) {
+        constructor(game: Phaser.Game, x: number, y: number, rotation: number) {
             super(game, x, y, 'bullet');
             this.anchor.setTo(0.5, 0.5);
             game.add.existing(this);
@@ -26,29 +19,10 @@ module Astroids {
             this.game.physics.arcade.velocityFromRotation(rotation,
                 Bullet.VELOCITY, this.body.velocity);
             this.lifespan = Bullet.LIFESPAN;
-            this.id = Bullet.bulletCounter++;
-
-            if (!this.isLocal) {
-                astroids.p2p.receiveText(Bullet.UPDATE_ME_KEY_PREFIX + this.id, this.onUpdateMe, this);
-            }
         }
 
         update() {
-            if (this.isLocal) {
-                astroids.p2p.sendText(Bullet.UPDATE_ME_KEY_PREFIX + this.id,
-                    this.x + ';' + this.y + ';');
-                this.screenWrap();
-            }
-        }
-
-        onUpdateMe(text: string) {
-            console.log('bullet received ' + text);
-            var messageArray = text.split(';');
-            var messageX: number = +messageArray[0];
-            var messageY: number = +messageArray[1];
-
-            this.x = messageX;
-            this.y = messageY;
+            this.screenWrap();
         }
 
         screenWrap() {
