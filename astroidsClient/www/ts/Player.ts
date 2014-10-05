@@ -14,7 +14,7 @@ module Astroids {
         private static MAX_SPEED: number = 300;
         private static ACCELERATION: number = 300;
         private static DRAG: number = 300;
-        private static BULLET_COOLDOWN: number = 50;
+        private static BULLET_COOLDOWN: number = 100;
 
         private bulletReactivationTime: number = 0;
 
@@ -53,7 +53,7 @@ module Astroids {
                 if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
                     this.fireBullet();
                 }
-//                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
+                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
 
                 this.screenWrap();
             }
