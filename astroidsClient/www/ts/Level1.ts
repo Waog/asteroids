@@ -5,7 +5,7 @@ module Astroids {
 
         private localPlayer: Player;
         private asteroidsFactory: AsteroidsFactory;
-
+        
         private static CREATE_PLAYER_KEY: string = 'createPlayer';
 
         preload() {

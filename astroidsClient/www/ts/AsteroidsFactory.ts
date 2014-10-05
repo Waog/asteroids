@@ -1,7 +1,7 @@
 module Astroids {
     declare var astroids: any;
 
-    interface ICreateAsteroidsMsg {
+    interface ICreateAsteroidMsg {
         x: number;
         y: number;
         rotation: number;
@@ -28,14 +28,14 @@ module Astroids {
         }
 
         onRemoteAsteroidCreation(text: string) {
-            var msg: ICreateAsteroidsMsg = JSON.parse(text);
+            var msg: ICreateAsteroidMsg = JSON.parse(text);
             new Asteroid(this.game, msg.x, msg.y, msg.rotation, this.asteroidsGroup);
         }
 
         pushUpdate() {
             for (var i = 0; i < this.asteroidsList.length; i++) {
                 var asteroid: Asteroid = this.asteroidsList[i];
-                var msg: ICreateAsteroidsMsg = {
+                var msg: ICreateAsteroidMsg = {
                     x: asteroid.x,
                     y: asteroid.y,
                     rotation: asteroid.rotation
