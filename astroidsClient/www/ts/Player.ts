@@ -5,37 +5,21 @@ module Astroids {
 
         static preload(game: Phaser.Game) {
             game.load.image('player', 'assets/player040.png');
-            game.load.image('bullet', 'assets/player020.png');
+            Bullet.preload(game);
         }
 
         private static UPDATE_ME_KEY: string = 'playerUpdateMe';
-
         private static ROTATION_SPEED: number = 200;
         private static MAX_SPEED: number = 300;
         private static ACCELERATION: number = 300;
-
-        private static BULLET_SPEED: number = 400;
         private static BULLET_COOLDOWN: number = 50;
 
-        private bullets: Phaser.Group;
         private bulletReactivationTime: number = 0;
 
         constructor(game: Phaser.Game, x: number, y: number, private isLocal: boolean) {
             super(game, x, y, 'player');
             this.anchor.setTo(0.5, 0.5);
-
-            //  Our ships bullets
-            this.bullets = game.add.group();
-            this.bullets.enableBody = true;
-            this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-
-            //  All 40 of them
-            this.bullets.createMultiple(40, 'bullet');
-            this.bullets.setAll('anchor.x', 0.5);
-            this.bullets.setAll('anchor.y', 0.5);
-
             game.add.existing(this);
-
             game.physics.enable(this, Phaser.Physics.ARCADE);
             this.body.drag.set(300);
             this.body.maxVelocity.set(Player.MAX_SPEED);
@@ -43,8 +27,6 @@ module Astroids {
             if (!this.isLocal) {
                 astroids.p2p.receiveText(Player.UPDATE_ME_KEY, this.onUpdateMe, this);
             }
-
-            // game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
         }
 
         update() {
@@ -105,16 +87,10 @@ module Astroids {
         fireBullet() {
 
             if (this.game.time.now > this.bulletReactivationTime) {
-                var bullet: Phaser.Sprite = this.bullets.getFirstExists(false);
+                var bullet: Bullet = new Bullet(this.game, this.body.x + this.width / 2,
+                    this.body.y + this.height / 2, this.rotation, true);
 
-                if (bullet) {
-                    bullet.reset(this.body.x + this.width / 2, this.body.y + this.height / 2);
-                    bullet.lifespan = 2000;
-                    bullet.rotation = this.rotation;
-                    this.game.physics.arcade.velocityFromRotation(this.rotation,
-                        Player.BULLET_SPEED, bullet.body.velocity);
-                    this.bulletReactivationTime = this.game.time.now + Player.BULLET_COOLDOWN;
-                }
+                this.bulletReactivationTime = this.game.time.now + Player.BULLET_COOLDOWN;
             }
 
         }
