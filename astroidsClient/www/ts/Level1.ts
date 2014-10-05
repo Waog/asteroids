@@ -20,26 +20,33 @@ module Astroids {
 
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
             var bg = this.add.sprite(0, 0, 'bg');
-            this.createLocalPlayer();
-            this.asteroidsFactory = new AsteroidsFactory(this.game);
+            
+            var asteroidsGroup: Phaser.Group = this.game.add.group();
+            asteroidsGroup.enableBody = true;
+            asteroidsGroup.physicsBodyType = Phaser.Physics.ARCADE;
+            
+            this.createLocalPlayer(asteroidsGroup);
+            this.asteroidsFactory = new AsteroidsFactory(this.game, asteroidsGroup);
 
             astroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
             astroids.p2p.onHandshakeFinished(this.onHandshakeFinished, this);
             astroids.p2p.connect();
-        }
 
+
+        }
+        
         onNewPlayer(text: string) {
             console.log('level 1 received ' + text);
             var messageArray = text.split(';');
             var messageX: number = +messageArray[0];
             var messageY: number = +messageArray[1];
-            new Player(this.game, messageX, messageY, false);
+            new Player(this.game, messageX, messageY, false, null);
         }
 
-        createLocalPlayer() {
+        createLocalPlayer(astroidsGroup: Phaser.Group) {
             var randX = this.game.rnd.realInRange(0, this.world.width * 0.3);
             var randY = this.game.rnd.realInRange(0, this.world.height * 0.3);
-            this.localPlayer = new Player(this.game, randX, randY, true);
+            this.localPlayer = new Player(this.game, randX, randY, true, astroidsGroup);
         }
 
         onHandshakeFinished() {
