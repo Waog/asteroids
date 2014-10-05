@@ -17,14 +17,15 @@ module Astroids {
         }
 
         create() {
-            astroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
 
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
             var bg = this.add.sprite(0, 0, 'bg');
             this.createLocalPlayer();
             this.asteroidsFactory = new AsteroidsFactory(this.game);
 
+            astroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
             astroids.p2p.onHandshakeFinished(this.onHandshakeFinished, this);
+            astroids.p2p.connect();
         }
 
         onNewPlayer(text: string) {
