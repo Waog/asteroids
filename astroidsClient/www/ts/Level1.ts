@@ -3,24 +3,28 @@ module Astroids {
 
     export class Level1 extends Phaser.State {
 
-        localPlayer: Player;
+        private localPlayer: Player;
+        private asteroidsFactory: AsteroidsFactory;
 
         private static CREATE_PLAYER_KEY: string = 'createPlayer';
 
         preload() {
             this.load.image('bg', 'assets/bg.png');
             Player.preload(this.game);
+            AsteroidsFactory.preload(this.game);
+
+            this.stage.disableVisibilityChange = true;
         }
 
         create() {
-            this.game.physics.startSystem(Phaser.Physics.ARCADE);
-            
             astroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
 
+            this.game.physics.startSystem(Phaser.Physics.ARCADE);
             var bg = this.add.sprite(0, 0, 'bg');
             this.createLocalPlayer();
-            astroids.p2p.onHandshakeFinished(this.informOthersAboutPlayerCreation, this);
+            this.asteroidsFactory = new AsteroidsFactory(this.game);
 
+            astroids.p2p.onHandshakeFinished(this.onHandshakeFinished, this);
         }
 
         onNewPlayer(text: string) {
@@ -37,9 +41,12 @@ module Astroids {
             this.localPlayer = new Player(this.game, randX, randY, true);
         }
 
-        informOthersAboutPlayerCreation() {
+        onHandshakeFinished() {
+            console.log('level1 sending', Level1.CREATE_PLAYER_KEY, this.localPlayer.x + ';'
+                + this.localPlayer.y + ';');
             astroids.p2p.sendText(Level1.CREATE_PLAYER_KEY, this.localPlayer.x + ';'
                 + this.localPlayer.y + ';');
+            this.asteroidsFactory.pushUpdate();
         }
     }
 } 
