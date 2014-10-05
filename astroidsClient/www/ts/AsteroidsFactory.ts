@@ -1,7 +1,15 @@
 module Astroids {
     declare var astroids: any;
 
+    interface ICreateAsteroidsMsg {
+        x: number;
+        y: number;
+        rotation: number;
+    }
+
     export class AsteroidsFactory {
+
+        private static CREATE_ASTEROIDS_KEY: string = 'CREATE_ASTEROIDS_KEY';
 
         asteroidsList: Asteroid[] = [];
 
@@ -10,7 +18,7 @@ module Astroids {
         }
 
         constructor(private game: Phaser.Game) {
-            astroids.p2p.receiveText(AsteroidsFactory.CreateAstroidsMsg.KEY,
+            astroids.p2p.receiveText(AsteroidsFactory.CREATE_ASTEROIDS_KEY,
                 this.onRemoteAsteroidCreation, this);
 
             var randX = this.game.rnd.realInRange(0, this.game.world.width * 0.3);
@@ -20,38 +28,18 @@ module Astroids {
         }
 
         onRemoteAsteroidCreation(text: string) {
-            var msg: AsteroidsFactory.CreateAstroidsMsg =
-                    AsteroidsFactory.CreateAstroidsMsg.fromText(text);
+            var msg: ICreateAsteroidsMsg = JSON.parse(text);
             new Asteroid(this.game, msg.x, msg.y, msg.rotation);
         }
 
         pushUpdate() {
-            for (var i = 0; this.asteroidsList.length; i++) {
+            for (var i = 0; i < this.asteroidsList.length; i++) {
                 var asteroid: Asteroid = this.asteroidsList[i];
-                var msg: AsteroidsFactory.CreateAstroidsMsg =
-                    new AsteroidsFactory.CreateAstroidsMsg(
-                        asteroid.x, asteroid.y, asteroid.rotation);
-                astroids.p2p.sendText(AsteroidsFactory.CreateAstroidsMsg.KEY,
-                    msg.getMsgText());
-            }
-        }
-    }
-
-    export module AsteroidsFactory {
-        export class CreateAstroidsMsg {
-
-            public static KEY: string = 'CREATE_ASTEROIDS_MSG_KEY';
-
-            static fromText(text: string) {
-                var messageArray = text.split(';');
-                return new CreateAstroidsMsg(+messageArray[0], +messageArray[1], +messageArray[2]);
-            }
-
-            constructor(public x: number, public y: number, public rotation: number) {
-            }
-
-            getMsgText() {
-                return this.x + ';' + this.y + ';' + this.rotation + ';';
+                var msg: any = {};
+                msg.x = asteroid.x;
+                msg.y = asteroid.y;
+                msg.rotation = asteroid.rotation;
+                astroids.p2p.sendText(AsteroidsFactory.CREATE_ASTEROIDS_KEY, JSON.stringify(msg));
             }
         }
     }
