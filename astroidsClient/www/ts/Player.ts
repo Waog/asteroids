@@ -12,6 +12,7 @@ module Astroids {
         private static ROTATION_SPEED: number = 200;
         private static MAX_SPEED: number = 300;
         private static ACCELERATION: number = 300;
+        private static DRAG: number = 300;
         private static BULLET_COOLDOWN: number = 50;
 
         private bulletReactivationTime: number = 0;
@@ -21,7 +22,7 @@ module Astroids {
             this.anchor.setTo(0.5, 0.5);
             game.add.existing(this);
             game.physics.enable(this, Phaser.Physics.ARCADE);
-            this.body.drag.set(300);
+            this.body.drag.set(Player.DRAG);
             this.body.maxVelocity.set(Player.MAX_SPEED);
 
             if (!this.isLocal) {
@@ -85,14 +86,11 @@ module Astroids {
         }
 
         fireBullet() {
-
             if (this.game.time.now > this.bulletReactivationTime) {
                 var bullet: Bullet = new Bullet(this.game, this.body.x + this.width / 2,
                     this.body.y + this.height / 2, this.rotation, true);
-
                 this.bulletReactivationTime = this.game.time.now + Player.BULLET_COOLDOWN;
             }
-
         }
     }
 }
