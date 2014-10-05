@@ -1,7 +1,20 @@
 module Astroids {
     declare var astroids: any;
 
-    interface IKill { }
+    interface IKillMsg { }
+
+    interface ICreateBulletMsg {
+        x: number;
+        y: number;
+        rotation: number;
+        remoteId: string;
+    }
+
+    interface IUpdateMsg {
+        x: number;
+        y: number;
+        angle: number;
+    }
 
     export class Player extends Phaser.Sprite {
 
@@ -60,22 +73,25 @@ module Astroids {
                 if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
                     this.fireBullet();
                 }
-                astroids.p2p.sendText(Player.UPDATE_ME_KEY, this.angle + ';' + this.x + ';' + this.y + ';');
+
+                var msg: IUpdateMsg = {
+                    x: this.x,
+                    y: this.y,
+                    angle: this.angle
+                }
+                astroids.p2p.sendText(Player.UPDATE_ME_KEY, JSON.stringify(msg));
 
                 this.screenWrap();
             }
         }
 
         onUpdateMe(text: string) {
-            //            console.log('player received ' + text);
-            var messageArray = text.split(';');
-            var messageRotation: number = +messageArray[0];
-            var messageX: number = +messageArray[1];
-            var messageY: number = +messageArray[2];
+            // console.log('player received ' + text);
+            var msg: IUpdateMsg = JSON.parse(text);
 
-            this.angle = messageRotation;
-            this.x = messageX;
-            this.y = messageY;
+            this.x = msg.x;
+            this.y = msg.y;
+            this.angle = msg.angle;
         }
 
         screenWrap() {
@@ -103,20 +119,22 @@ module Astroids {
                     this.asteroidsGroup);
                 this.bulletReactivationTime = this.game.time.now + Player.BULLET_COOLDOWN;
 
-                astroids.p2p.sendText(Player.FIRE_BULLET_KEY, x + ';' + y + ';'
-                    + this.rotation + ';' + bullet.getRemoteId() + ';');
+                var msg: ICreateBulletMsg = {
+                    x: x,
+                    y: y,
+                    rotation: this.rotation,
+                    remoteId: bullet.getRemoteId()
+                };
+
+                astroids.p2p.sendText(Player.FIRE_BULLET_KEY, JSON.stringify(msg));
             }
         }
 
         onRemoteFireBullet(text: string) {
-            //            console.log('player received remoteFireBullet ' + text);
-            var messageArray = text.split(';');
-            var messageX: number = +messageArray[0];
-            var messageY: number = +messageArray[1];
-            var messageRotation: number = +messageArray[2];
-            var messageRemoteId: string = messageArray[3];
-            var bullet: Bullet = new Bullet(this.game, messageX, messageY, messageRotation,
-                null, messageRemoteId);
+            // console.log('player received remoteFireBullet ' + text);
+            var msg: ICreateBulletMsg = JSON.parse(text);
+            var bullet: Bullet = new Bullet(this.game, msg.x, msg.y, msg.rotation,
+                null, msg.remoteId);
         }
 
         kill(): Phaser.Sprite {
