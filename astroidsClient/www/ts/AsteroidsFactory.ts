@@ -5,13 +5,14 @@ module Astroids {
         x: number;
         y: number;
         rotation: number;
+        remoteId: string;
     }
 
     export class AsteroidsFactory {
 
         private static CREATE_ASTEROIDS_KEY: string = 'CREATE_ASTEROIDS_KEY';
 
-        private asteroidsList: Asteroid[] = [];
+        private localAsteroidsList: Asteroid[] = [];
 
         static preload(game: Phaser.Game) {
             Asteroid.preload(game);
@@ -24,21 +25,22 @@ module Astroids {
             var randX = this.game.rnd.realInRange(0, this.game.world.width * 0.3);
             var randY = this.game.rnd.realInRange(0, this.game.world.height * 0.3);
             var randRot = this.game.rnd.realInRange(0, 2 * Math.PI);
-            this.asteroidsList.push(new Asteroid(this.game, randX, randY, randRot, asteroidsGroup));
+            this.localAsteroidsList.push(new Asteroid(this.game, randX, randY, randRot, asteroidsGroup));
         }
 
         onRemoteAsteroidCreation(text: string) {
             var msg: ICreateAsteroidMsg = JSON.parse(text);
-            new Asteroid(this.game, msg.x, msg.y, msg.rotation, this.asteroidsGroup);
+            new Asteroid(this.game, msg.x, msg.y, msg.rotation, this.asteroidsGroup, msg.remoteId);
         }
 
         pushUpdate() {
-            for (var i = 0; i < this.asteroidsList.length; i++) {
-                var asteroid: Asteroid = this.asteroidsList[i];
+            for (var i = 0; i < this.localAsteroidsList.length; i++) {
+                var asteroid: Asteroid = this.localAsteroidsList[i];
                 var msg: ICreateAsteroidMsg = {
                     x: asteroid.x,
                     y: asteroid.y,
-                    rotation: asteroid.rotation
+                    rotation: asteroid.rotation,
+                    remoteId: asteroid.getRemoteId()
                 };
                 astroids.p2p.sendText(AsteroidsFactory.CREATE_ASTEROIDS_KEY, JSON.stringify(msg));
             }

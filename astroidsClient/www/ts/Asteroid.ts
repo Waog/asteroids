@@ -8,23 +8,43 @@ module Astroids {
         }
 
         private static VELOCITY: number = 50;
+        private static KILL_KEY_PREFIX: string = 'ASTEROID_KILL_KEY_';
+
+
+        private isLocal: boolean;
 
         constructor(game: Phaser.Game, x: number, y: number, rotation: number,
-            asteroidsGroup: Phaser.Group) {
-            
+            asteroidsGroup: Phaser.Group, private remoteId: string = null) {
+
             super(game, x, y, 'asteroid');
             this.anchor.setTo(0.5, 0.5);
             asteroidsGroup.add(this);
             this.rotation = rotation;
             this.game.physics.arcade.velocityFromRotation(rotation,
                 Asteroid.VELOCITY, this.body.velocity);
+
+            if (!this.remoteId) {
+                this.isLocal = true;
+                this.remoteId = "asteroid_" + Math.random();
+            } else {
+                this.isLocal = false;
+            }
+
+            if (!this.isLocal) {
+                astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this);
+            }
+
+        }
+
+        getRemoteId(): string {
+            return this.remoteId;
         }
 
         update() {
             this.screenWrap();
         }
 
-        screenWrap() {
+        private screenWrap() {
             if (this.x < 0) {
                 this.x = this.game.width;
             }
@@ -38,6 +58,15 @@ module Astroids {
             else if (this.y > this.game.height) {
                 this.y = 0;
             }
+        }
+
+        kill(): Phaser.Sprite {
+            astroids.p2p.sendText(Asteroid.KILL_KEY_PREFIX + this.remoteId, 'noValue');
+            return super.kill();
+        }
+
+        private killWithoutResend() {
+            super.kill();
         }
     }
 }
