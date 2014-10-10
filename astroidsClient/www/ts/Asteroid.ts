@@ -30,10 +30,7 @@ module Astroids {
                 this.isLocal = false;
             }
 
-            if (!this.isLocal) {
-                astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
-            }
-
+            astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
         }
 
         getRemoteId(): string {
