@@ -31,7 +31,7 @@ module Astroids {
             }
 
             if (!this.isLocal) {
-                astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this);
+                astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
             }
 
         }
@@ -61,7 +61,7 @@ module Astroids {
         }
 
         kill(): Phaser.Sprite {
-            astroids.p2p.sendText(Asteroid.KILL_KEY_PREFIX + this.remoteId, 'noValue');
+            astroids.p2p.sendText(Asteroid.KILL_KEY_PREFIX + this.remoteId, 'noValue', true);
             return super.kill();
         }
 
