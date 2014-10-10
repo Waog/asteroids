@@ -49,13 +49,13 @@ module Astroids {
             this.screenWrap();
         }
 
-        onAsteroidCollision(thisLocalBullet: Bullet, asteroid: Asteroid) {
+        private onAsteroidCollision(thisLocalBullet: Bullet, asteroid: Asteroid) {
             asteroid.kill();
             astroids.p2p.sendText(Bullet.KILL_KEY_PREFIX + this.remoteId, 'noValue');
             this.kill();
         }
 
-        screenWrap() {
+        private screenWrap() {
             if (this.x < 0) {
                 this.x = this.game.width;
             }
