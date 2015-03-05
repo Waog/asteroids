@@ -22,9 +22,11 @@ module Astroids {
             astroids.p2p.receiveText(AsteroidsFactory.CREATE_ASTEROIDS_KEY,
                 this.onRemoteAsteroidCreation, this);
 
-            var randX = this.game.rnd.realInRange(0, this.game.world.width * 0.3);
+            var randX = this.game.rnd.realInRange(this.game.world.width * 0.6, this.game.world.width * 0.9);
+            //            var randX = this.game.rnd.realInRange(0, this.game.world.width * 0.3);
             var randY = this.game.rnd.realInRange(0, this.game.world.height * 0.3);
-            var randRot = this.game.rnd.realInRange(0, 2 * Math.PI);
+            var randRot = Math.PI / 2; // TODO: for debugging only.
+            // var randRot = this.game.rnd.realInRange(0, 2 * Math.PI);
             this.localAsteroidsList.push(new Asteroid(this.game, randX, randY, randRot, asteroidsGroup));
         }
 
