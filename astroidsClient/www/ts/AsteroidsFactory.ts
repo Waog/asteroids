@@ -38,6 +38,11 @@ module Astroids {
         pushUpdate() {
             for (var i = 0; i < this.localAsteroidsList.length; i++) {
                 var asteroid: Asteroid = this.localAsteroidsList[i];
+                
+                if (! asteroid.exists) {
+                    continue;
+                }
+                
                 var msg: ICreateAsteroidMsg = {
                     x: asteroid.x,
                     y: asteroid.y,
