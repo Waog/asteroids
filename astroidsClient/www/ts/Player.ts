@@ -43,8 +43,10 @@ module Astroids {
             game.physics.enable(this, Phaser.Physics.ARCADE);
             this.body.drag.set(Player.DRAG);
             this.body.maxVelocity.set(Player.MAX_SPEED);
+            
 
             if (!this.isLocal) {
+                this.tint = 0x8888FF;
                 astroids.p2p.receiveText(Player.KILL_KEY, this.kill, this);
                 astroids.p2p.receiveText(Player.UPDATE_ME_KEY, this.onUpdateMe, this);
                 astroids.p2p.receiveText(Player.FIRE_BULLET_KEY, this.onRemoteFireBullet, this);

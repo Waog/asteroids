@@ -33,6 +33,7 @@ module Astroids {
             }
 
             if (!this.isLocal) {
+                this.tint = 0x8888FF;
                 astroids.p2p.receiveText(Bullet.KILL_KEY_PREFIX + this.remoteId, this.kill, this);
             }
         }

@@ -28,6 +28,7 @@ module Astroids {
                 this.remoteId = "asteroid_" + Math.random();
             } else {
                 this.isLocal = false;
+                this.tint = 0x8888FF;
             }
 
             astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
