@@ -31,7 +31,9 @@ module Astroids {
         private static ACCELERATION: number = 300;
         private static DRAG: number = 300;
         private static BULLET_COOLDOWN: number = 100;
+        private static DISCONNECT_TIMEOUT: number = 2000;
 
+        private disconnectCountDown: number = Player.DISCONNECT_TIMEOUT;
         private bulletReactivationTime: number = 0;
 
         constructor(game: Phaser.Game, x: number, y: number, private isLocal: boolean,
@@ -43,7 +45,7 @@ module Astroids {
             game.physics.enable(this, Phaser.Physics.ARCADE);
             this.body.drag.set(Player.DRAG);
             this.body.maxVelocity.set(Player.MAX_SPEED);
-            
+
 
             if (!this.isLocal) {
                 this.tint = 0x8888FF;
@@ -84,11 +86,18 @@ module Astroids {
                 astroids.p2p.sendText(Player.UPDATE_ME_KEY, JSON.stringify(msg));
 
                 this.screenWrap();
+            } else {
+                this.disconnectCountDown -= this.game.time.elapsed;
+                if (this.disconnectCountDown <= 0) {
+                    this.kill();
+                }
             }
         }
 
         onUpdateMe(text: string) {
             // console.log('player received ' + text);
+            this.disconnectCountDown = Player.DISCONNECT_TIMEOUT;
+
             var msg: IUpdateMsg = JSON.parse(text);
 
             this.x = msg.x;
