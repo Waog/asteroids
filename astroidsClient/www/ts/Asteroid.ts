@@ -65,16 +65,29 @@ module Astroids {
 
             var msg: IUpdateMsg = JSON.parse(text);
 
-            this.x = msg.x;
-            this.y = msg.y;
-            this.rotation = msg.rotation;
+            var deltaX: number = msg.x - this.x;
+            var deltaY: number = msg.y - this.y;
+            var deltaRotation: number = msg.rotation - this.rotation;
 
-            this.game.physics.arcade.velocityFromRotation(this.rotation,
-                Asteroid.VELOCITY, this.body.velocity);
+            var signedDeltaX: string = (deltaX >= 0) ? "+" : "";
+            signedDeltaX += deltaX;
+            var signedDeltaY: string = (deltaY >= 0) ? "+" : "";
+            signedDeltaY += deltaY;
+            var signedDeltaRotation: string = (deltaRotation >= 0) ? "+" : "";
+            signedDeltaRotation += deltaRotation;
+
+            this.game.add.tween(this).to({
+                x: signedDeltaX, y: signedDeltaY,
+                rotation: signedDeltaRotation
+            }, 1000, Phaser.Easing.Linear.None, true);
+
+
         }
 
         update() {
             this.screenWrap();
+            //this.game.physics.arcade.velocityFromRotation(this.rotation,
+            //  Asteroid.VELOCITY, this.body.velocity);
         }
 
         private screenWrap() {
