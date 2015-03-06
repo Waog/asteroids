@@ -24,6 +24,7 @@ module Astroids {
 
 
         private isLocal: boolean;
+        private updateTween: Phaser.Tween;
 
         constructor(game: Phaser.Game, x: number, y: number, rotation: number,
             asteroidsGroup: Phaser.Group, private remoteId: string = null) {
@@ -53,8 +54,6 @@ module Astroids {
             return this.remoteId;
         }
         private updateRemote(screenWrap: boolean = false) {
-            console.log("updateRemote() called from Asteroid " + this);
-
             if (!screenWrap) {
                 this.game.time.events.add(Phaser.Timer.SECOND * 1, this.updateRemote, this);
             }
@@ -69,12 +68,18 @@ module Astroids {
         }
 
         private onUpdateMe(text: string) {
+            console.log("onUpdateMe(" + text + ")");
+
             this.disconnectCountDown = Asteroid.DISCONNECT_TIMEOUT;
 
             var msg: IUpdateMsg = JSON.parse(text);
 
 
             if (msg.screenWrap) {
+                if (this.updateTween) {
+                    this.updateTween.stop();
+                    this.game.tweens.remove(this.updateTween);
+                }
                 this.x = msg.x;
                 this.y = msg.y;
                 this.rotation = msg.rotation;
@@ -90,10 +95,15 @@ module Astroids {
                 var signedDeltaRotation: string = (deltaRotation >= 0) ? "+" : "";
                 signedDeltaRotation += deltaRotation;
 
-                this.game.add.tween(this).to({
+                this.updateTween = this.game.add.tween(this);
+                this.updateTween.to({
                     x: signedDeltaX, y: signedDeltaY,
                     rotation: signedDeltaRotation
                 }, 1000, Phaser.Easing.Linear.None, true);
+
+                //                this.x = msg.x;
+                //                this.y = this.y + deltaY;
+                //                this.rotation = msg.rotation;
             }
 
         }
@@ -142,6 +152,10 @@ module Astroids {
 
         private killWithoutResend() {
             super.kill();
+        }
+
+        render() {
+            this.game.debug.spriteInfo(this, 32, 32);
         }
     }
 }
