@@ -6,7 +6,7 @@ module Astroids {
         x: number;
         y: number;
         rotation: number;
-        skipTween: boolean;
+        screenWrap: boolean;
     }
 
     export class Asteroid extends Phaser.Sprite {
@@ -52,15 +52,18 @@ module Astroids {
         getRemoteId(): string {
             return this.remoteId;
         }
-        private updateRemote(skipTween: boolean = false) {
+        private updateRemote(screenWrap: boolean = false) {
             console.log("updateRemote() called from Asteroid " + this);
-            this.game.time.events.add(Phaser.Timer.SECOND * 1, this.updateRemote, this);
+
+            if (!screenWrap) {
+                this.game.time.events.add(Phaser.Timer.SECOND * 1, this.updateRemote, this);
+            }
 
             var msg: IUpdateMsg = {
                 x: this.x,
                 y: this.y,
                 rotation: this.rotation,
-                skipTween: skipTween
+                screenWrap: screenWrap
             }
             astroids.p2p.sendText(Asteroid.UPDATE_ME_KEY, JSON.stringify(msg));
         }
@@ -70,22 +73,23 @@ module Astroids {
 
             var msg: IUpdateMsg = JSON.parse(text);
 
-            var deltaX: number = msg.x - this.x;
-            var deltaY: number = msg.y - this.y;
-            var deltaRotation: number = msg.rotation - this.rotation;
 
-            var signedDeltaX: string = (deltaX >= 0) ? "+" : "";
-            signedDeltaX += deltaX;
-            var signedDeltaY: string = (deltaY >= 0) ? "+" : "";
-            signedDeltaY += deltaY;
-            var signedDeltaRotation: string = (deltaRotation >= 0) ? "+" : "";
-            signedDeltaRotation += deltaRotation;
-
-            if (msg.skipTween) {
+            if (msg.screenWrap) {
                 this.x = msg.x;
                 this.y = msg.y;
                 this.rotation = msg.rotation;
             } else {
+                var deltaX: number = msg.x - this.x;
+                var deltaY: number = msg.y - this.y;
+                var deltaRotation: number = msg.rotation - this.rotation;
+
+                var signedDeltaX: string = (deltaX >= 0) ? "+" : "";
+                signedDeltaX += deltaX;
+                var signedDeltaY: string = (deltaY >= 0) ? "+" : "";
+                signedDeltaY += deltaY;
+                var signedDeltaRotation: string = (deltaRotation >= 0) ? "+" : "";
+                signedDeltaRotation += deltaRotation;
+
                 this.game.add.tween(this).to({
                     x: signedDeltaX, y: signedDeltaY,
                     rotation: signedDeltaRotation
@@ -109,21 +113,26 @@ module Astroids {
         }
 
         private screenWrap() {
+
             if (this.x < 0) {
                 this.x = this.game.width;
+                this.updateRemote(true);
             }
             else if (this.x > this.game.width) {
                 this.x = 0;
+                this.updateRemote(true);
             }
 
             if (this.y < 0) {
                 this.y = this.game.height;
+                this.updateRemote(true);
             }
             else if (this.y > this.game.height) {
                 this.y = 0;
+                this.updateRemote(true);
             }
 
-            this.updateRemote(true);
+
         }
 
         kill(): Phaser.Sprite {
