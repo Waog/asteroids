@@ -17,7 +17,9 @@ module Astroids {
         private static VELOCITY: number = 50;
         private static KILL_KEY_PREFIX: string = 'ASTEROID_KILL_KEY_';
         private static UPDATE_ME_KEY: string = 'asteroidUpdateMe';
+        private static DISCONNECT_TIMEOUT: number = 3000;
 
+        private disconnectCountDown: number = Asteroid.DISCONNECT_TIMEOUT;
 
 
         private isLocal: boolean;
@@ -62,7 +64,8 @@ module Astroids {
         }
 
         private onUpdateMe(text: string) {
-
+            this.disconnectCountDown = Asteroid.DISCONNECT_TIMEOUT;
+            
             var msg: IUpdateMsg = JSON.parse(text);
 
             var deltaX: number = msg.x - this.x;
@@ -88,6 +91,13 @@ module Astroids {
             this.screenWrap();
             //this.game.physics.arcade.velocityFromRotation(this.rotation,
             //  Asteroid.VELOCITY, this.body.velocity);
+
+            if (!this.isLocal) {
+                this.disconnectCountDown -= this.game.time.elapsed;
+                if (this.disconnectCountDown <= 0) {
+                    this.kill();
+                }
+            }
         }
 
         private screenWrap() {
