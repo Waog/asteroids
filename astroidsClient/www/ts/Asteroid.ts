@@ -6,6 +6,7 @@ module Astroids {
         x: number;
         y: number;
         rotation: number;
+        skipTween: boolean;
     }
 
     export class Asteroid extends Phaser.Sprite {
@@ -51,21 +52,22 @@ module Astroids {
         getRemoteId(): string {
             return this.remoteId;
         }
-        private updateRemote() {
+        private updateRemote(skipTween: boolean = false) {
             console.log("updateRemote() called from Asteroid " + this);
             this.game.time.events.add(Phaser.Timer.SECOND * 1, this.updateRemote, this);
 
             var msg: IUpdateMsg = {
                 x: this.x,
                 y: this.y,
-                rotation: this.rotation
+                rotation: this.rotation,
+                skipTween: skipTween
             }
             astroids.p2p.sendText(Asteroid.UPDATE_ME_KEY, JSON.stringify(msg));
         }
 
         private onUpdateMe(text: string) {
             this.disconnectCountDown = Asteroid.DISCONNECT_TIMEOUT;
-            
+
             var msg: IUpdateMsg = JSON.parse(text);
 
             var deltaX: number = msg.x - this.x;
@@ -79,11 +81,16 @@ module Astroids {
             var signedDeltaRotation: string = (deltaRotation >= 0) ? "+" : "";
             signedDeltaRotation += deltaRotation;
 
-            this.game.add.tween(this).to({
-                x: signedDeltaX, y: signedDeltaY,
-                rotation: signedDeltaRotation
-            }, 1000, Phaser.Easing.Linear.None, true);
-
+            if (msg.skipTween) {
+                this.x = msg.x;
+                this.y = msg.y;
+                this.rotation = msg.rotation;
+            } else {
+                this.game.add.tween(this).to({
+                    x: signedDeltaX, y: signedDeltaY,
+                    rotation: signedDeltaRotation
+                }, 1000, Phaser.Easing.Linear.None, true);
+            }
 
         }
 
@@ -114,6 +121,8 @@ module Astroids {
             else if (this.y > this.game.height) {
                 this.y = 0;
             }
+
+            this.updateRemote(true);
         }
 
         kill(): Phaser.Sprite {
