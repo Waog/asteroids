@@ -95,11 +95,12 @@ module Astroids {
         }
 
         update() {
-            this.screenWrap();
             //this.game.physics.arcade.velocityFromRotation(this.rotation,
             //  Asteroid.VELOCITY, this.body.velocity);
 
-            if (!this.isLocal) {
+            if (this.isLocal) {
+                this.screenWrap();
+            } else {
                 this.disconnectCountDown -= this.game.time.elapsed;
                 if (this.disconnectCountDown <= 0) {
                     this.kill();
