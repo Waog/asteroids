@@ -23,7 +23,8 @@ module Astroids {
 
         private disconnectCountDown: number = Asteroid.DISCONNECT_TIMEOUT;
 
-
+        private correctionUpdate: IUpdateMsg;
+        private timeToApplyCorrectionUpdate: number;
         private isLocal: boolean;
 
         constructor(game: Phaser.Game, x: number, y: number, rotation: number,
@@ -80,15 +81,15 @@ module Astroids {
                 this.y = msg.y;
                 this.rotation = msg.rotation;
             } else {
-                var deltaX: number = msg.x - this.x;
-                var deltaY: number = msg.y - this.y;
-                var deltaRotation: number = msg.rotation - this.rotation;
 
-                this.x = msg.x;
-                this.y = msg.y;
-                this.rotation = msg.rotation;
+                this.correctionUpdate = {
+                    x: msg.x - this.x,
+                    y: msg.y - this.y,
+                    rotation: msg.rotation - this.rotation,
+                    screenWrap: false
+                };
+                this.timeToApplyCorrectionUpdate = Asteroid.UPDATE_INTERVAL;
             }
-
         }
 
         update() {
@@ -99,7 +100,31 @@ module Astroids {
                 if (this.disconnectCountDown <= 0) {
                     this.kill();
                 }
+
+                this.applyCorrectionUpdate();
             }
+        }
+
+        private applyCorrectionUpdate() {
+            if (!this.correctionUpdate || this.timeToApplyCorrectionUpdate <= 0) {
+                return;
+            }
+
+            var percentageToApply: number = this.game.time.elapsed / this.timeToApplyCorrectionUpdate;
+            
+            var deltaX = this.correctionUpdate.x * percentageToApply;
+            this.x += deltaX;
+            this.correctionUpdate.x -= deltaX;
+            
+            var deltaY = this.correctionUpdate.y * percentageToApply;
+            this.y += deltaY;
+            this.correctionUpdate.y -= deltaY;
+            
+            var deltaRotation = this.correctionUpdate.rotation * percentageToApply;
+            this.rotation += deltaRotation;
+            this.correctionUpdate.rotation -= deltaRotation;
+            
+            this.timeToApplyCorrectionUpdate -= this.game.time.elapsed;
         }
 
         private screenWrap() {
