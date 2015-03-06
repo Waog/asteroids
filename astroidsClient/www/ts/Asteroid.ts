@@ -18,13 +18,13 @@ module Astroids {
         private static VELOCITY: number = 50;
         private static KILL_KEY_PREFIX: string = 'ASTEROID_KILL_KEY_';
         private static UPDATE_ME_KEY: string = 'asteroidUpdateMe';
-        private static DISCONNECT_TIMEOUT: number = 6000;
+        private static UPDATE_INTERVAL: number = 1 * Phaser.Timer.SECOND;
+        private static DISCONNECT_TIMEOUT: number = Asteroid.UPDATE_INTERVAL * 2;
 
         private disconnectCountDown: number = Asteroid.DISCONNECT_TIMEOUT;
 
 
         private isLocal: boolean;
-        private updateTween: Phaser.Tween;
 
         constructor(game: Phaser.Game, x: number, y: number, rotation: number,
             asteroidsGroup: Phaser.Group, private remoteId: string = null) {
@@ -39,7 +39,7 @@ module Astroids {
             if (!this.remoteId) {
                 this.isLocal = true;
                 this.remoteId = "asteroid_" + Math.random();
-                this.game.time.events.add(Phaser.Timer.SECOND * 4, this.updateRemote, this);
+                this.game.time.events.add(Asteroid.UPDATE_INTERVAL, this.updateRemote, this);
             } else {
                 this.isLocal = false;
                 this.tint = 0x8888FF;
@@ -55,7 +55,7 @@ module Astroids {
         }
         private updateRemote(screenWrap: boolean = false) {
             if (!screenWrap) {
-                this.game.time.events.add(Phaser.Timer.SECOND * 4, this.updateRemote, this);
+                this.game.time.events.add(Asteroid.UPDATE_INTERVAL, this.updateRemote, this);
             }
 
             var msg: IUpdateMsg = {
@@ -76,10 +76,6 @@ module Astroids {
 
 
             if (msg.screenWrap) {
-                if (this.updateTween) {
-                    this.updateTween.stop();
-                    this.game.tweens.remove(this.updateTween);
-                }
                 this.x = msg.x;
                 this.y = msg.y;
                 this.rotation = msg.rotation;
@@ -88,30 +84,14 @@ module Astroids {
                 var deltaY: number = msg.y - this.y;
                 var deltaRotation: number = msg.rotation - this.rotation;
 
-                var signedDeltaX: string = (deltaX >= 0) ? "+" : "";
-                signedDeltaX += deltaX;
-                var signedDeltaY: string = (deltaY >= 0) ? "+" : "";
-                signedDeltaY += deltaY;
-                var signedDeltaRotation: string = (deltaRotation >= 0) ? "+" : "";
-                signedDeltaRotation += deltaRotation;
-
-                this.updateTween = this.game.add.tween(this);
-                this.updateTween.to({
-                    x: signedDeltaX, y: signedDeltaY,
-                    rotation: signedDeltaRotation
-                }, 4000, Phaser.Easing.Linear.None, true);
-
-                //                this.x = msg.x;
-                //                this.y = this.y + deltaY;
-                //                this.rotation = msg.rotation;
+                this.x = msg.x;
+                this.y = msg.y;
+                this.rotation = msg.rotation;
             }
 
         }
 
         update() {
-            //this.game.physics.arcade.velocityFromRotation(this.rotation,
-            //  Asteroid.VELOCITY, this.body.velocity);
-
             if (this.isLocal) {
                 this.screenWrap();
             } else {
@@ -141,8 +121,6 @@ module Astroids {
                 this.y = 0;
                 this.updateRemote(true);
             }
-
-
         }
 
         kill(): Phaser.Sprite {
