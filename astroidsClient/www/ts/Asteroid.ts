@@ -18,7 +18,7 @@ module Astroids {
         private static VELOCITY: number = 50;
         private static KILL_KEY_PREFIX: string = 'ASTEROID_KILL_KEY_';
         private static UPDATE_ME_KEY: string = 'asteroidUpdateMe';
-        private static DISCONNECT_TIMEOUT: number = 3000;
+        private static DISCONNECT_TIMEOUT: number = 6000;
 
         private disconnectCountDown: number = Asteroid.DISCONNECT_TIMEOUT;
 
@@ -39,7 +39,7 @@ module Astroids {
             if (!this.remoteId) {
                 this.isLocal = true;
                 this.remoteId = "asteroid_" + Math.random();
-                this.game.time.events.add(Phaser.Timer.SECOND * 1, this.updateRemote, this);
+                this.game.time.events.add(Phaser.Timer.SECOND * 4, this.updateRemote, this);
             } else {
                 this.isLocal = false;
                 this.tint = 0x8888FF;
@@ -55,7 +55,7 @@ module Astroids {
         }
         private updateRemote(screenWrap: boolean = false) {
             if (!screenWrap) {
-                this.game.time.events.add(Phaser.Timer.SECOND * 1, this.updateRemote, this);
+                this.game.time.events.add(Phaser.Timer.SECOND * 4, this.updateRemote, this);
             }
 
             var msg: IUpdateMsg = {
@@ -99,7 +99,7 @@ module Astroids {
                 this.updateTween.to({
                     x: signedDeltaX, y: signedDeltaY,
                     rotation: signedDeltaRotation
-                }, 1000, Phaser.Easing.Linear.None, true);
+                }, 4000, Phaser.Easing.Linear.None, true);
 
                 //                this.x = msg.x;
                 //                this.y = this.y + deltaY;
