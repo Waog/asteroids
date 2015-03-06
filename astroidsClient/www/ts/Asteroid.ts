@@ -6,8 +6,13 @@ module Astroids {
         x: number;
         y: number;
         rotation: number;
+        body: IUpdateMsgBody;
         screenWrap: boolean;
     }
+
+    interface IUpdateMsgBody {
+        velocity: Phaser.Point;
+    };
 
     export class Asteroid extends Phaser.Sprite {
 
@@ -54,6 +59,7 @@ module Astroids {
         getRemoteId(): string {
             return this.remoteId;
         }
+
         private updateRemote(screenWrap: boolean = false) {
             if (!screenWrap) {
                 this.game.time.events.add(Asteroid.UPDATE_INTERVAL, this.updateRemote, this);
@@ -63,6 +69,9 @@ module Astroids {
                 x: this.x,
                 y: this.y,
                 rotation: this.rotation,
+                body: {
+                    velocity: this.body.velocity
+                },
                 screenWrap: screenWrap
             }
             astroids.p2p.sendText(Asteroid.UPDATE_ME_KEY, JSON.stringify(msg));
@@ -76,16 +85,19 @@ module Astroids {
             var msg: IUpdateMsg = JSON.parse(text);
 
 
+            this.body.velocity = msg.body.velocity;
             if (msg.screenWrap) {
                 this.x = msg.x;
                 this.y = msg.y;
                 this.rotation = msg.rotation;
             } else {
-
                 this.correctionUpdate = {
                     x: msg.x - this.x,
                     y: msg.y - this.y,
                     rotation: msg.rotation - this.rotation,
+                    body: {
+                        velocity: new Phaser.Point(0, 0)
+                    },
                     screenWrap: false
                 };
                 this.timeToApplyCorrectionUpdate = Asteroid.UPDATE_INTERVAL;
@@ -111,19 +123,19 @@ module Astroids {
             }
 
             var percentageToApply: number = this.game.time.elapsed / this.timeToApplyCorrectionUpdate;
-            
+
             var deltaX = this.correctionUpdate.x * percentageToApply;
             this.x += deltaX;
             this.correctionUpdate.x -= deltaX;
-            
+
             var deltaY = this.correctionUpdate.y * percentageToApply;
             this.y += deltaY;
             this.correctionUpdate.y -= deltaY;
-            
+
             var deltaRotation = this.correctionUpdate.rotation * percentageToApply;
             this.rotation += deltaRotation;
             this.correctionUpdate.rotation -= deltaRotation;
-            
+
             this.timeToApplyCorrectionUpdate -= this.game.time.elapsed;
         }
 
