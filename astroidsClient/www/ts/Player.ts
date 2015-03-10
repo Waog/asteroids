@@ -58,7 +58,7 @@ module Astroids {
         update() {
             if (this.isLocal) {
 
-                this.game.physics.arcade.collide(this, this.asteroidsGroup, this.kill, null, this);
+                this.game.physics.arcade.collide(this, this.asteroidsGroup, this.onAstroidCollision, null, this);
 
                 this.body.angularVelocity = 0;
                 this.body.acceleration.set(0);
@@ -148,11 +148,10 @@ module Astroids {
                 null, msg.remoteId);
         }
 
-        kill(): Phaser.Sprite {
-            if (this.isLocal) {
-                astroids.p2p.sendText(Player.KILL_KEY, 'noValue');
-            }
-            return super.kill();
+        onAstroidCollision(player:Player, astroid:Asteroid) {
+            astroids.p2p.sendText(Player.KILL_KEY, 'noValue');
+            astroid.updatePeer();
+            this.kill();
         }
     }
 }

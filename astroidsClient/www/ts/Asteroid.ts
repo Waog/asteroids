@@ -62,9 +62,14 @@ module Astroids {
 
         private updateRemote(screenWrap: boolean = false) {
             if (!screenWrap) {
+                // propably it would be better to update at an interval instead
                 this.game.time.events.add(Asteroid.UPDATE_INTERVAL, this.updateRemote, this);
             }
 
+            this.updatePeer(screenWrap);
+        }
+
+        public updatePeer(screenWrap: boolean = false) {
             var msg: IUpdateMsg = {
                 x: this.x,
                 y: this.y,
