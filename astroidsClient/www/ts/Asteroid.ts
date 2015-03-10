@@ -23,7 +23,7 @@ module Astroids {
         private static VELOCITY: number = 50;
         private static KILL_KEY_PREFIX: string = 'ASTEROID_KILL_KEY_';
         private static UPDATE_ME_KEY: string = 'asteroidUpdateMe';
-        private static UPDATE_INTERVAL: number = 1 * Phaser.Timer.SECOND;
+        private static UPDATE_INTERVAL: number = 5 * Phaser.Timer.SECOND;
         private static DISCONNECT_TIMEOUT: number = Asteroid.UPDATE_INTERVAL * 2;
 
         private disconnectCountDown: number = Asteroid.DISCONNECT_TIMEOUT;
@@ -49,7 +49,7 @@ module Astroids {
             } else {
                 this.isLocal = false;
                 this.tint = 0x8888FF;
-                astroids.p2p.receiveText(Asteroid.UPDATE_ME_KEY, this.onUpdateMe, this);
+                astroids.p2p.receiveText(Asteroid.UPDATE_ME_KEY + this.remoteId, this.onUpdateMe, this, true);
             }
 
             astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
@@ -79,7 +79,7 @@ module Astroids {
                 },
                 screenWrap: screenWrap
             }
-            astroids.p2p.sendText(Asteroid.UPDATE_ME_KEY, JSON.stringify(msg));
+            astroids.p2p.sendText(Asteroid.UPDATE_ME_KEY + this.remoteId, JSON.stringify(msg));
         }
 
         private onUpdateMe(text: string) {
