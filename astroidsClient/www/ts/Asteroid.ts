@@ -49,8 +49,8 @@ module Astroids {
             } else {
                 this.isLocal = false;
                 this.tint = 0x8888FF;
-                astroids.p2p.receiveText(Asteroid.UPDATE_ME_KEY + this.remoteId, this.onUpdateMe, this, true);
             }
+            astroids.p2p.receiveText(Asteroid.UPDATE_ME_KEY + this.remoteId, this.onUpdateMe, this, true);
 
             astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
 
