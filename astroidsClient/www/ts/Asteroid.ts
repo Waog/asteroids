@@ -23,7 +23,7 @@ module Astroids {
         private static VELOCITY: number = 50;
         private static KILL_KEY_PREFIX: string = 'ASTEROID_KILL_KEY_';
         private static UPDATE_ME_KEY: string = 'asteroidUpdateMe';
-        private static UPDATE_INTERVAL: number = 5 * Phaser.Timer.SECOND;
+        private static UPDATE_INTERVAL: number = 1 * Phaser.Timer.SECOND;
         private static DISCONNECT_TIMEOUT: number = Asteroid.UPDATE_INTERVAL * 2;
 
         private disconnectCountDown: number = Asteroid.DISCONNECT_TIMEOUT;
@@ -83,8 +83,6 @@ module Astroids {
         }
 
         private onUpdateMe(text: string) {
-            console.log("onUpdateMe(" + text + ")");
-
             this.disconnectCountDown = Asteroid.DISCONNECT_TIMEOUT;
 
             var msg: IUpdateMsg = JSON.parse(text);
