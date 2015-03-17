@@ -49,8 +49,8 @@ module Astroids {
             } else {
                 this.isLocal = false;
                 this.tint = 0x8888FF;
-                astroids.p2p.receiveText(Asteroid.UPDATE_ME_KEY, this.onUpdateMe, this);
             }
+            astroids.p2p.receiveText(Asteroid.UPDATE_ME_KEY + this.remoteId, this.onUpdateMe, this, true);
 
             astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
 
@@ -62,9 +62,14 @@ module Astroids {
 
         private updateRemote(screenWrap: boolean = false) {
             if (!screenWrap) {
+                // propably it would be better to update at an interval instead
                 this.game.time.events.add(Asteroid.UPDATE_INTERVAL, this.updateRemote, this);
             }
 
+            this.updatePeer(screenWrap);
+        }
+
+        public updatePeer(screenWrap: boolean = false) {
             var msg: IUpdateMsg = {
                 x: this.x,
                 y: this.y,
@@ -74,12 +79,10 @@ module Astroids {
                 },
                 screenWrap: screenWrap
             }
-            astroids.p2p.sendText(Asteroid.UPDATE_ME_KEY, JSON.stringify(msg));
+            astroids.p2p.sendText(Asteroid.UPDATE_ME_KEY + this.remoteId, JSON.stringify(msg));
         }
 
         private onUpdateMe(text: string) {
-            console.log("onUpdateMe(" + text + ")");
-
             this.disconnectCountDown = Asteroid.DISCONNECT_TIMEOUT;
 
             var msg: IUpdateMsg = JSON.parse(text);
