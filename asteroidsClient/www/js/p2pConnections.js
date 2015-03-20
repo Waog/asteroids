@@ -84,7 +84,9 @@ asteroids.p2p.sendText = function(key, text, debugFlag) {
 }
 
 asteroids.p2p.receiveText = function(key, callback, cbContext, debugFlag) {
-    console.log('registering for text receiving');
+    if (debugFlag) {
+        console.log('registering for text receiving: ', key, callback, cbContext);
+    }
     asteroids.p2p._receiverCbs[key] = callback;
     asteroids.p2p._receiverCbContexts[key] = cbContext;
     asteroids.p2p._receiverCbDebugFlag[key] = debugFlag;
