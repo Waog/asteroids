@@ -162,6 +162,7 @@ module Asteroids {
         }
 
         private killWithoutResend() {
+            this.game.time.events.remove(this.updatePeerTimerEvent);
             super.kill();
         }
 
