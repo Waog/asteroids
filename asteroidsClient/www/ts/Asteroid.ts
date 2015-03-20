@@ -31,6 +31,7 @@ module Asteroids {
         private correctionUpdate: IUpdateMsg;
         private timeToApplyCorrectionUpdate: number;
         private isLocal: boolean;
+        private updatePeerTimerEvent: Phaser.TimerEvent;
 
         constructor(game: Phaser.Game, x: number, y: number, rotation: number,
             asteroidsGroup: Phaser.Group, private remoteId: string = null) {
@@ -45,7 +46,7 @@ module Asteroids {
             if (!this.remoteId) {
                 this.isLocal = true;
                 this.remoteId = "asteroid_" + Math.random();
-                this.game.time.events.add(Asteroid.UPDATE_INTERVAL, this.updateRemote, this);
+                this.updatePeerTimerEvent = this.game.time.events.loop(Asteroid.UPDATE_INTERVAL, this.updatePeer, this);
             } else {
                 this.isLocal = false;
                 this.tint = 0x8888FF;
@@ -58,15 +59,6 @@ module Asteroids {
 
         getRemoteId(): string {
             return this.remoteId;
-        }
-
-        private updateRemote(screenWrap: boolean = false) {
-            if (!screenWrap) {
-                // propably it would be better to update at an interval instead
-                this.game.time.events.add(Asteroid.UPDATE_INTERVAL, this.updateRemote, this);
-            }
-
-            this.updatePeer(screenWrap);
         }
 
         public updatePeer(screenWrap: boolean = false) {
@@ -113,7 +105,7 @@ module Asteroids {
             } else {
                 this.disconnectCountDown -= this.game.time.elapsed;
                 if (this.disconnectCountDown <= 0) {
-                    this.kill();
+                    this.killWithoutResend();
                 }
 
                 this.applyCorrectionUpdate();
@@ -146,29 +138,31 @@ module Asteroids {
 
             if (this.x < 0) {
                 this.x = this.game.width;
-                this.updateRemote(true);
+                this.updatePeer(true);
             }
             else if (this.x > this.game.width) {
                 this.x = 0;
-                this.updateRemote(true);
+                this.updatePeer(true);
             }
 
             if (this.y < 0) {
                 this.y = this.game.height;
-                this.updateRemote(true);
+                this.updatePeer(true);
             }
             else if (this.y > this.game.height) {
                 this.y = 0;
-                this.updateRemote(true);
+                this.updatePeer(true);
             }
         }
 
         kill(): Phaser.Sprite {
+            this.game.time.events.remove(this.updatePeerTimerEvent);
             asteroids.p2p.sendText(Asteroid.KILL_KEY_PREFIX + this.remoteId, 'noValue', true);
             return super.kill();
         }
 
         private killWithoutResend() {
+            this.game.time.events.remove(this.updatePeerTimerEvent);
             super.kill();
         }
 
