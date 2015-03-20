@@ -105,7 +105,7 @@ module Asteroids {
             } else {
                 this.disconnectCountDown -= this.game.time.elapsed;
                 if (this.disconnectCountDown <= 0) {
-                    this.kill();
+                    this.killWithoutResend();
                 }
 
                 this.applyCorrectionUpdate();
