@@ -27,8 +27,15 @@ module Asteroids {
             var randY = this.game.rnd.realInRange(0, this.game.world.height * 0.3);
             var randRot = Math.PI / 2; // TODO: for debugging only.
             // var randRot = this.game.rnd.realInRange(0, 2 * Math.PI);
-            this.localAsteroidsList.push(new Asteroid(this.game, randX, randY, randRot, asteroidsGroup));
+            var asteroid: Asteroid = new Asteroid(this.game, randX, randY, randRot, asteroidsGroup);
+            this.localAsteroidsList.push(asteroid);
+            asteroid.events.onKilled.add(this.onLocalAsteroidKilled, this);
         }
+
+        private onLocalAsteroidKilled(asteroid: Asteroid) {
+            this.localAsteroidsList.splice(this.localAsteroidsList.indexOf(asteroid),1);
+        }
+        
 
         onRemoteAsteroidCreation(text: string) {
             var msg: ICreateAsteroidMsg = JSON.parse(text);
@@ -38,11 +45,11 @@ module Asteroids {
         pushUpdate() {
             for (var i = 0; i < this.localAsteroidsList.length; i++) {
                 var asteroid: Asteroid = this.localAsteroidsList[i];
-                
-                if (! asteroid.exists) {
+
+                if (!asteroid.exists) {
                     continue;
                 }
-                
+
                 var msg: ICreateAsteroidMsg = {
                     x: asteroid.x,
                     y: asteroid.y,
