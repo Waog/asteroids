@@ -1,5 +1,5 @@
-module Astroids {
-    declare var astroids: any;
+module Asteroids {
+    declare var asteroids: any;
 
     export class Level1 extends Phaser.State {
 
@@ -28,9 +28,9 @@ module Astroids {
             this.createLocalPlayer(asteroidsGroup);
             this.asteroidsFactory = new AsteroidsFactory(this.game, asteroidsGroup);
 
-            astroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
-            astroids.p2p.onHandshakeFinished(this.onHandshakeFinished, this);
-            astroids.p2p.connect();
+            asteroids.p2p.receiveText(Level1.CREATE_PLAYER_KEY, this.onNewPlayer, this);
+            asteroids.p2p.onHandshakeFinished(this.onHandshakeFinished, this);
+            asteroids.p2p.connect();
 
 
         }
@@ -43,16 +43,16 @@ module Astroids {
             new Player(this.game, messageX, messageY, false, null);
         }
 
-        createLocalPlayer(astroidsGroup: Phaser.Group) {
+        createLocalPlayer(asteroidsGroup: Phaser.Group) {
             var randX = this.game.rnd.realInRange(0, this.world.width * 0.3);
             var randY = this.game.rnd.realInRange(0, this.world.height * 0.3);
-            this.localPlayer = new Player(this.game, randX, randY, true, astroidsGroup);
+            this.localPlayer = new Player(this.game, randX, randY, true, asteroidsGroup);
         }
 
         onHandshakeFinished() {
             console.log('level1 sending', Level1.CREATE_PLAYER_KEY, this.localPlayer.x + ';'
                 + this.localPlayer.y + ';');
-            astroids.p2p.sendText(Level1.CREATE_PLAYER_KEY, this.localPlayer.x + ';'
+            asteroids.p2p.sendText(Level1.CREATE_PLAYER_KEY, this.localPlayer.x + ';'
                 + this.localPlayer.y + ';');
             this.asteroidsFactory.pushUpdate();
         }

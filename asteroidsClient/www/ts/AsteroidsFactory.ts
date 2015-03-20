@@ -1,5 +1,5 @@
-module Astroids {
-    declare var astroids: any;
+module Asteroids {
+    declare var asteroids: any;
 
     interface ICreateAsteroidMsg {
         x: number;
@@ -19,7 +19,7 @@ module Astroids {
         }
 
         constructor(private game: Phaser.Game, private asteroidsGroup: Phaser.Group) {
-            astroids.p2p.receiveText(AsteroidsFactory.CREATE_ASTEROIDS_KEY,
+            asteroids.p2p.receiveText(AsteroidsFactory.CREATE_ASTEROIDS_KEY,
                 this.onRemoteAsteroidCreation, this);
 
             var randX = this.game.rnd.realInRange(this.game.world.width * 0.6, this.game.world.width * 0.9);
@@ -49,7 +49,7 @@ module Astroids {
                     rotation: asteroid.rotation,
                     remoteId: asteroid.getRemoteId()
                 };
-                astroids.p2p.sendText(AsteroidsFactory.CREATE_ASTEROIDS_KEY, JSON.stringify(msg));
+                asteroids.p2p.sendText(AsteroidsFactory.CREATE_ASTEROIDS_KEY, JSON.stringify(msg));
             }
         }
     }
