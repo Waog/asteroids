@@ -1,5 +1,5 @@
-module Astroids {
-    declare var astroids: any;
+module Asteroids {
+    declare var asteroids: any;
 
     export class Bullet extends Phaser.Sprite {
 
@@ -34,7 +34,7 @@ module Astroids {
 
             if (!this.isLocal) {
                 this.tint = 0x8888FF;
-                astroids.p2p.receiveText(Bullet.KILL_KEY_PREFIX + this.remoteId, this.kill, this);
+                asteroids.p2p.receiveText(Bullet.KILL_KEY_PREFIX + this.remoteId, this.kill, this);
             }
         }
 
@@ -52,7 +52,7 @@ module Astroids {
 
         private onAsteroidCollision(thisLocalBullet: Bullet, asteroid: Asteroid) {
             asteroid.kill();
-            astroids.p2p.sendText(Bullet.KILL_KEY_PREFIX + this.remoteId, 'noValue');
+            asteroids.p2p.sendText(Bullet.KILL_KEY_PREFIX + this.remoteId, 'noValue');
             this.kill();
         }
 
