@@ -1,5 +1,5 @@
-module Astroids {
-    declare var astroids: any;
+module Asteroids {
+    declare var asteroids: any;
 
 
     interface IUpdateMsg {
@@ -50,9 +50,9 @@ module Astroids {
                 this.isLocal = false;
                 this.tint = 0x8888FF;
             }
-            astroids.p2p.receiveText(Asteroid.UPDATE_ME_KEY + this.remoteId, this.onUpdateMe, this, true);
+            asteroids.p2p.receiveText(Asteroid.UPDATE_ME_KEY + this.remoteId, this.onUpdateMe, this, true);
 
-            astroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
+            asteroids.p2p.receiveText(Asteroid.KILL_KEY_PREFIX + this.remoteId, this.killWithoutResend, this, true);
 
         }
 
@@ -79,7 +79,7 @@ module Astroids {
                 },
                 screenWrap: screenWrap
             }
-            astroids.p2p.sendText(Asteroid.UPDATE_ME_KEY + this.remoteId, JSON.stringify(msg));
+            asteroids.p2p.sendText(Asteroid.UPDATE_ME_KEY + this.remoteId, JSON.stringify(msg));
         }
 
         private onUpdateMe(text: string) {
@@ -164,7 +164,7 @@ module Astroids {
         }
 
         kill(): Phaser.Sprite {
-            astroids.p2p.sendText(Asteroid.KILL_KEY_PREFIX + this.remoteId, 'noValue', true);
+            asteroids.p2p.sendText(Asteroid.KILL_KEY_PREFIX + this.remoteId, 'noValue', true);
             return super.kill();
         }
 

@@ -1,5 +1,5 @@
-module Astroids {
-    declare var astroids: any;
+module Asteroids {
+    declare var asteroids: any;
 
     interface IKillMsg { }
 
@@ -49,16 +49,16 @@ module Astroids {
 
             if (!this.isLocal) {
                 this.tint = 0x8888FF;
-                astroids.p2p.receiveText(Player.KILL_KEY, this.kill, this);
-                astroids.p2p.receiveText(Player.UPDATE_ME_KEY, this.onUpdateMe, this);
-                astroids.p2p.receiveText(Player.FIRE_BULLET_KEY, this.onRemoteFireBullet, this);
+                asteroids.p2p.receiveText(Player.KILL_KEY, this.kill, this);
+                asteroids.p2p.receiveText(Player.UPDATE_ME_KEY, this.onUpdateMe, this);
+                asteroids.p2p.receiveText(Player.FIRE_BULLET_KEY, this.onRemoteFireBullet, this);
             }
         }
 
         update() {
             if (this.isLocal) {
 
-                this.game.physics.arcade.collide(this, this.asteroidsGroup, this.onAstroidCollision, null, this);
+                this.game.physics.arcade.collide(this, this.asteroidsGroup, this.onAsteroidCollision, null, this);
 
                 this.body.angularVelocity = 0;
                 this.body.acceleration.set(0);
@@ -83,7 +83,7 @@ module Astroids {
                     y: this.y,
                     angle: this.angle
                 }
-                astroids.p2p.sendText(Player.UPDATE_ME_KEY, JSON.stringify(msg));
+                asteroids.p2p.sendText(Player.UPDATE_ME_KEY, JSON.stringify(msg));
 
                 this.screenWrap();
             } else {
@@ -137,7 +137,7 @@ module Astroids {
                     remoteId: bullet.getRemoteId()
                 };
 
-                astroids.p2p.sendText(Player.FIRE_BULLET_KEY, JSON.stringify(msg));
+                asteroids.p2p.sendText(Player.FIRE_BULLET_KEY, JSON.stringify(msg));
             }
         }
 
@@ -148,9 +148,9 @@ module Astroids {
                 null, msg.remoteId);
         }
 
-        onAstroidCollision(player:Player, astroid:Asteroid) {
-            astroids.p2p.sendText(Player.KILL_KEY, 'noValue');
-            astroid.updatePeer();
+        onAsteroidCollision(player:Player, asteroid:Asteroid) {
+            asteroids.p2p.sendText(Player.KILL_KEY, 'noValue');
+            asteroid.updatePeer();
             this.kill();
         }
     }

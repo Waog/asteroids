@@ -1,3 +1,3 @@
 window.onload = () => {
-    var game = new Astroids.Game();
+    var game = new Asteroids.Game();
 };
