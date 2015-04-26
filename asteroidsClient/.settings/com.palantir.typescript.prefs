@@ -1,13 +1,13 @@
 build.path.exportedFolder=
 build.path.sourceFolder=www/ts
-compiler.codeGenTarget=ECMASCRIPT3
+compiler.codeGenTarget=ECMASCRIPT5
 compiler.compileOnSave=true
 compiler.generateDeclarationFiles=true
 compiler.mapSourceFiles=true
-compiler.moduleGenTarget=UNSPECIFIED
+compiler.moduleGenTarget=ASYNCHRONOUS
 compiler.noImplicitAny=true
 compiler.noLib=false
 compiler.outputDirOption=www/js/gen
-compiler.outputFileOption=asteroidsGame.js
+compiler.outputFileOption=
 compiler.removeComments=false
 eclipse.preferences.version=1
