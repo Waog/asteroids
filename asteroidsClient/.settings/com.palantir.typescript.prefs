@@ -1,5 +1,5 @@
 build.path.exportedFolder=
-build.path.sourceFolder=www/ts
+build.path.sourceFolder=www/lib/node_modules/phaser/typescript;www/ts
 compiler.codeGenTarget=ECMASCRIPT5
 compiler.compileOnSave=true
 compiler.generateDeclarationFiles=true
