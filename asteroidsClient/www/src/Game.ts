@@ -1,5 +1,5 @@
-/// <reference path="./phaser.d.ts"/>
-
+/// <reference path="../lib/node_modules/phaser/typescript/phaser.comments.d.ts"/>
+ 
 import Level1File = require('Level1');
 import Level1 = Level1File.Level1;
 
