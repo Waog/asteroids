@@ -1,5 +1,5 @@
 build.path.exportedFolder=
-build.path.sourceFolder=www/ts
+build.path.sourceFolder=www/lib/node_modules/phaser/typescript;www/src
 compiler.codeGenTarget=ECMASCRIPT5
 compiler.compileOnSave=true
 compiler.generateDeclarationFiles=true
@@ -7,7 +7,7 @@ compiler.mapSourceFiles=true
 compiler.moduleGenTarget=ASYNCHRONOUS
 compiler.noImplicitAny=true
 compiler.noLib=false
-compiler.outputDirOption=www/js/gen
+compiler.outputDirOption=www/gen
 compiler.outputFileOption=
 compiler.removeComments=false
 eclipse.preferences.version=1

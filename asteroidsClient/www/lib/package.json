@@ -1,0 +1,9 @@
+{
+  "name": "asteroids",
+  "version": "0.0.0",
+  "dependencies": {
+    "peerjs": "^0.3.14",
+    "phaser": "2.3.x",
+    "requirejs": "^2.1.17"
+  }
+}
