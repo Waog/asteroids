@@ -3,6 +3,6 @@
   "version": "0.0.0",
   "dependencies": {
     "phaser": "^2.3.0",
-    "require.js": "^0.3.97"
+    "requirejs": "^2.1.17"
   }
 }
