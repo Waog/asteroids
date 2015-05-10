@@ -5,5 +5,9 @@
     "peerjs": "^0.3.14",
     "phaser": "2.3.x",
     "requirejs": "^2.1.17"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0"
   }
 }
