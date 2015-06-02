@@ -6,4 +6,3 @@ app/scripts/gen
 /typings/
 app/ts/tsd.d.ts
 test/spec/gen
-.project

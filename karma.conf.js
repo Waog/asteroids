@@ -17,6 +17,9 @@ module.exports = function(config) {
 	    // list of files / patterns to load in the browser
 	    files : [
 	        // bower:js
+	        'bower_components/phaser/build/phaser.js',
+	        'bower_components/peerjs/peer.js',
+	        'bower_components/requirejs/require.js',
 	        // endbower
 
 	        'test/spec/**/*.js',

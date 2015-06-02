@@ -10,6 +10,18 @@
     },
     "chai/chai.d.ts": {
       "commit": "c2b70ba731a485968fa3e0561a32652f59787015"
+    },
+    "webrtc/RTCPeerConnection.d.ts": {
+      "commit": "484544d14d400190b20f270341c97b16adc0f1ef"
+    },
+    "requirejs/require.d.ts": {
+      "commit": "484544d14d400190b20f270341c97b16adc0f1ef"
+    },
+    "peerjs/peerjs.d.ts": {
+      "commit": "484544d14d400190b20f270341c97b16adc0f1ef"
+    },
+    "webrtc/MediaStream.d.ts": {
+      "commit": "484544d14d400190b20f270341c97b16adc0f1ef"
     }
   }
 }
