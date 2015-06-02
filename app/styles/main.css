@@ -1,0 +1,55 @@
+body {
+	background: #fafafa;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #333;
+}
+
+.board {
+	background: #F2ECEC;
+	float: left;
+	padding: 20px;
+	width: 80%;
+	margin: 0% 10% 0% 10%;
+}
+
+.column {
+	width: 170px;
+	float: left;
+	padding-bottom: 100px;
+	background: #BBBBBB;
+	margin: 2px;
+	padding: 10px 1px 10px 1px;
+	min-height: 30px;
+}
+
+.portlet {
+	margin: 0 1em 1em 0;
+	padding: 0.3em;
+}
+
+.feature {
+	background: #B9B9EF;
+}
+
+.portlet-header {
+	padding: 0.2em 0.3em;
+	margin-bottom: 0.5em;
+	position: relative;
+}
+
+.portlet-toggle {
+	position: absolute;
+	top: 50%;
+	right: 0;
+	margin-top: -8px;
+}
+
+.portlet-content {
+	padding: 0.4em;
+}
+
+.portlet-placeholder {
+	border: 1px dotted black;
+	margin: 0 1em 1em 0;
+	height: 50px;
+}
