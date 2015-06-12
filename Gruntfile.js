@@ -37,6 +37,8 @@ module.exports = function (grunt) {
               'bower install',
               'echo tsd reinstall',
               'tsd reinstall',
+              'echo grunt copy:phaserts',
+              'grunt copy:phaserts',
               'echo tsd rebundle',
               'tsd rebundle'
         ].join('&&')
@@ -356,6 +358,14 @@ module.exports = function (grunt) {
         cwd: '<%= config.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      },
+      phaserts: {
+        expand: true,
+        dest: 'typings/phaser',
+        cwd: 'bower_components/phaser/typescript',
+        src: ['phaser.comments.d.ts',
+              'pixi.comments.d.ts',
+              'p2.d.ts']
       }
     },
 
