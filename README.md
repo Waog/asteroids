@@ -4,6 +4,8 @@ A p2p asteroids multiplayer remake
 ## for Devs
 1. Execute the following commands in the folder `/asteroidsClient/www/lib`
 
+TODO: outdated
+
  ```
  $ npm install
  $ grunt

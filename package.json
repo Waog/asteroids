@@ -1,0 +1,50 @@
+{
+  "name": "asteroids",
+  "devDependencies": {
+    "apache-server-configs": "^2.7.1",
+    "chai": "^2.3.0",
+    "grunt": "^0.4.5",
+    "grunt-autoprefixer": "^1.0.0",
+    "grunt-concurrent": "^0.5.0",
+    "grunt-continue": "^0.1.0",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-connect": "^0.8.0",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-cssmin": "^0.10.0",
+    "grunt-contrib-htmlmin": "^0.3.0",
+    "grunt-contrib-imagemin": "^0.8.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.5.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-focus": "^0.1.1",
+    "grunt-karma": "^0.10.1",
+    "grunt-newer": "^0.7.0",
+    "grunt-rev": "^0.1.0",
+    "grunt-shell": "^1.1.2",
+    "grunt-svgmin": "^0.4.0",
+    "grunt-typescript": "^0.6.2",
+    "grunt-usemin": "^2.3.0",
+    "grunt-wiredep": "^1.7.0",
+    "jit-grunt": "^0.9.1",
+    "jshint-stylish": "^0.4.0",
+    "karma": "^0.12.32",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-mocha": "^0.1.10",
+    "karma-mocha-debug": "^0.1.2",
+    "karma-mocha-reporter": "^1.0.2",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-source-map-support": "^1.0.0",
+    "mocha": "^2.2.5",
+    "time-grunt": "^0.4.0",
+    "typescript": "^1.5.0-beta"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "install": "grunt install",
+    "test": "grunt test"
+  }
+}

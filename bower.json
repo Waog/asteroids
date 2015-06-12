@@ -1,0 +1,16 @@
+{
+  "name": "asteroids",
+  "private": true,
+  "dependencies": {
+    "phaser": "~2.3.0",
+    "peerjs": "~0.3.14",
+    "requirejs": "Waog/requirejs"
+  },
+  "overrides": {
+    "requirejs": {
+      "main": [
+        "require.js"
+      ]
+    }
+  }
+}
