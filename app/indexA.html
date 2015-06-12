@@ -1,22 +1,54 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="no-js">
 <head>
-<meta charset="ISO-8859-1">
-<title>Asteroids Client</title>
+<meta charset="utf-8">
+<title>Asteroids</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+<link rel="shortcut icon" href="/favicon.ico">
+<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+<!-- build:css(.) styles/vendor.css -->
+<!-- bower:css -->
+<!-- endbower -->
+<!-- endbuild -->
+<!-- build:css(.tmp) styles/main.css -->
+<link rel="stylesheet" href="styles/main.css">
+<!-- endbuild -->
+
 </head>
 <body>
-    Our Asteroids Client: Player A
+  <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
 
-    <script type="text/javascript">
-                    var asteroids = {};
-                    asteroids.playerId = 'playerA';
-                    asteroids.otherPlayerId = 'playerB';
-                </script>
 
-    <script src="lib/node_modules/peerjs/dist/peer.js"></script>
-    <script src="lib/node_modules/phaser/build/phaser.js"></script>
-    <script src="src/p2pConnections.js"></script>
-    <script data-main="gen/app"
-        src="lib/node_modules/requirejs/require.js"></script>
+  <div>
+    <h1>Our Asteroids Client: Player A</h1>
+  </div>
+
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/phaser/build/phaser.js"></script>
+  <script src="bower_components/peerjs/peer.js"></script>
+  <script src="bower_components/requirejs/require.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+    
+  <script type="text/javascript">
+    var asteroids = {};
+    asteroids.playerId = 'playerA';
+    asteroids.otherPlayerId = 'playerB';
+  </script>
+  <script src="scripts/p2pConnections.js"></script>
+  <script>
+    require.config({
+      baseUrl: "scripts/gen"
+    });
+    require(['app']);
+  </script>
+  <!-- build:js({app,.tmp}) scripts/main.js -->
+  <!-- endbuild -->
+
 </body>
 </html>

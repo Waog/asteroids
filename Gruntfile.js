@@ -229,7 +229,7 @@ module.exports = function (grunt) {
     wiredep: {
       app: {
         ignorePath: /^\/|\.\.\//,
-        src: ['<%= config.app %>/index.html'] // TODO: inject into indexA and B
+        src: ['<%= config.app %>/index.html', '<%= config.app %>/indexA.html','<%= config.app %>/indexB.html'] // TODO: inject into indexA and B
       },
       test: { // some magic taken from here:
 							// https://github.com/yeoman/generator-angular/issues/856
