@@ -18,4 +18,3 @@ notifications:
       - contact@kraenz.eu
     on_success: never
     on_failure: never
-    
