@@ -45,12 +45,6 @@ module.exports = function (grunt) {
       }
     },
     
-    focus: {
-      test: {
-        exclude: ['appts2appjs']
-      }
-    },
-    
     karma: {
     	options: {
         configFile: 'karma.conf.js',
@@ -89,6 +83,27 @@ module.exports = function (grunt) {
       		target: 'es5', //or es3 or es6
       		sourceMap: true
       	}
+      },
+      watchbase: {
+        src: ['<%= config.tssrc %>/*.ts', 'typings/**/*.ts'],
+        dest: '<%= config.app %>/scripts/gen/', // TODO: require could resolve dependencies incorrect
+        options: {
+        	module: 'amd', //or commonjs 
+        	target: 'es5', //or es3, es5 or es6
+        	sourceMap: true,
+        	declaration: true,
+        	watch: ['<%= config.tssrc %>/*.ts', 'typings/**/*.ts']
+        }
+      },
+      watchtest: {
+      	src: ['<%= config.tssrc %>/*.ts', '<%= config.tstest %>/*.ts', 'typings/**/*.ts'],
+      	dest: 'test/spec/gen/', // TODO: require could resolve dependencies incorrect
+      	options: {
+        	module: 'amd', //or commonjs 
+      		target: 'es5', //or es3 or es6
+      		sourceMap: true,
+      		watch: ['<%= config.tssrc %>/*.ts', '<%= config.tstest %>/*.ts', 'typings/**/*.ts']
+      	}
       }
     },
     
@@ -104,14 +119,6 @@ module.exports = function (grunt) {
         // TODO: is also run on 'debug' target, not only on 'continuous', which works for the moment
         tasks: ['karma:continuous:run'] // NOTE the :run flag
       },
-      appts2appjs: {
-      	files: ['<%= config.tssrc %>/*.ts'],
-      	tasks: ['typescript:base']
-      },
-      ts2testjs: {
-        files: ['<%= config.tssrc %>/*.ts', '<%= config.tstest %>/*.ts'],
-        tasks: ['typescript:test']
-      },
       jshint: {
       	files: ['<%= config.app %>/scripts/{,*/}*.js',
       	        '!<%= config.app %>/scripts/gen/*'],
@@ -126,20 +133,15 @@ module.exports = function (grunt) {
       },
       livereload: {
         options: {
-          livereload: '<%= connect.options.livereload %>'
+          livereload: true
         },
         files: [
           '<%= config.app %>/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
+          '<%= config.app %>/scripts/{,*/}*.js',
           '<%= config.app %>/assets/{,*/}*'
         ]
-      },
-      livereloadjs: {
-        files: ['<%= config.app %>/scripts/{,*/}*.js'],
-        options: {
-          livereload: true
-        }
-      },
+      }
     },
 
     // The actual grunt server settings
@@ -371,6 +373,10 @@ module.exports = function (grunt) {
 
     // Run some tasks in parallel to speed up build process
     concurrent: {
+      options: {
+        logConcurrentOutput: true,
+        limit: 30
+      },
       server: [
         'copy:styles'
       ],
@@ -381,6 +387,16 @@ module.exports = function (grunt) {
         'copy:styles',
         'imagemin',
         'svgmin'
+      ],
+      watchAll: [
+        'watch:bower',
+        'watch:karma',
+        'watch:jshint',
+        'watch:gruntfile',
+        'watch:styles',
+        'watch:livereload',
+        'typescript:watchbase',
+        'typescript:watchtest'
       ]
     }
   });
@@ -396,13 +412,14 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'typescript',
+      'typescript:base',
+      'typescript:test',
       'wiredep',
       'concurrent:server',
       'autoprefixer',
       'karma:continuous:start',
       'connect:livereload',
-      'watch'
+      'concurrent:watchAll'
     ]);
   });
 
@@ -434,20 +451,21 @@ module.exports = function (grunt) {
         'karma:once',
         'continue:off',
         'karma:continuous:start',
-        'focus:test'
+        'concurrent:watchAll'
       ]);
     }
 		if (target === 'debug') {
 			grunt.task.run([
 			  'karma:debug:start',
-			  'focus:test'
+			  'concurrent:watchAll'
 	    ]);
 		}
   });
   
   grunt.registerTask('build', [
     'clean:dist',
-    'typescript',
+    'typescript:base',
+    'typescript:test',
     'wiredep',
     'useminPrepare',
     'concurrent:dist',
