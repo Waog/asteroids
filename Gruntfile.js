@@ -45,12 +45,6 @@ module.exports = function (grunt) {
       }
     },
     
-    focus: {
-      test: {
-        exclude: ['appts2appjs']
-      }
-    },
-    
     karma: {
     	options: {
         configFile: 'karma.conf.js',
@@ -126,20 +120,15 @@ module.exports = function (grunt) {
       },
       livereload: {
         options: {
-          livereload: '<%= connect.options.livereload %>'
+          livereload: true
         },
         files: [
           '<%= config.app %>/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
+          '<%= config.app %>/scripts/{,*/}*.js',
           '<%= config.app %>/assets/{,*/}*'
         ]
-      },
-      livereloadjs: {
-        files: ['<%= config.app %>/scripts/{,*/}*.js'],
-        options: {
-          livereload: true
-        }
-      },
+      }
     },
 
     // The actual grunt server settings
@@ -371,6 +360,10 @@ module.exports = function (grunt) {
 
     // Run some tasks in parallel to speed up build process
     concurrent: {
+      options: {
+        logConcurrentOutput: true,
+        limit: 30
+      },
       server: [
         'copy:styles'
       ],
@@ -381,6 +374,16 @@ module.exports = function (grunt) {
         'copy:styles',
         'imagemin',
         'svgmin'
+      ],
+      watchAll: [ // TODO: use the actually implemented watch tasks
+        'watch:bower',
+        'watch:karma',
+        'watch:appts2appjs',
+        'watch:ts2testjs',
+        'watch:jshint',
+        'watch:gruntfile',
+        'watch:styles',
+        'watch:livereload'
       ]
     }
   });
@@ -402,7 +405,7 @@ module.exports = function (grunt) {
       'autoprefixer',
       'karma:continuous:start',
       'connect:livereload',
-      'watch'
+      'concurrent:watchAll'
     ]);
   });
 
@@ -434,13 +437,13 @@ module.exports = function (grunt) {
         'karma:once',
         'continue:off',
         'karma:continuous:start',
-        'focus:test'
+        'concurrent:watchAll'
       ]);
     }
 		if (target === 'debug') {
 			grunt.task.run([
 			  'karma:debug:start',
-			  'focus:test'
+			  'concurrent:watchAll'
 	    ]);
 		}
   });
