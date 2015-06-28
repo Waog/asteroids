@@ -84,7 +84,18 @@ module.exports = function (grunt) {
       		sourceMap: true
       	}
       },
-      watch: {
+      watchbase: {
+        src: ['<%= config.tssrc %>/*.ts', 'typings/**/*.ts'],
+        dest: '<%= config.app %>/scripts/gen/', // TODO: require could resolve dependencies incorrect
+        options: {
+        	module: 'amd', //or commonjs 
+        	target: 'es5', //or es3, es5 or es6
+        	sourceMap: true,
+        	declaration: true,
+        	watch: ['<%= config.tssrc %>/*.ts', 'typings/**/*.ts']
+        }
+      },
+      watchtest: {
       	src: ['<%= config.tssrc %>/*.ts', '<%= config.tstest %>/*.ts', 'typings/**/*.ts'],
       	dest: 'test/spec/gen/', // TODO: require could resolve dependencies incorrect
       	options: {
@@ -107,14 +118,6 @@ module.exports = function (grunt) {
         files: ['app/scripts/**/*.js', 'test/spec/**/*.js'],
         // TODO: is also run on 'debug' target, not only on 'continuous', which works for the moment
         tasks: ['karma:continuous:run'] // NOTE the :run flag
-      },
-      appts2appjs: {
-      	files: ['<%= config.tssrc %>/*.ts'],
-      	tasks: ['typescript:base']
-      },
-      ts2testjs: {
-        files: ['<%= config.tssrc %>/*.ts', '<%= config.tstest %>/*.ts'],
-        tasks: ['typescript:test']
       },
       jshint: {
       	files: ['<%= config.app %>/scripts/{,*/}*.js',
@@ -385,15 +388,15 @@ module.exports = function (grunt) {
         'imagemin',
         'svgmin'
       ],
-      watchAll: [ // TODO: use the actually implemented watch tasks
+      watchAll: [
         'watch:bower',
         'watch:karma',
-        'watch:appts2appjs',
-        'watch:ts2testjs',
         'watch:jshint',
         'watch:gruntfile',
         'watch:styles',
-        'watch:livereload'
+        'watch:livereload',
+        'typescript:watchbase',
+        'typescript:watchtest'
       ]
     }
   });
@@ -409,7 +412,8 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'typescript',
+      'typescript:base',
+      'typescript:test',
       'wiredep',
       'concurrent:server',
       'autoprefixer',
@@ -460,7 +464,8 @@ module.exports = function (grunt) {
   
   grunt.registerTask('build', [
     'clean:dist',
-    'typescript',
+    'typescript:base',
+    'typescript:test',
     'wiredep',
     'useminPrepare',
     'concurrent:dist',
