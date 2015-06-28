@@ -83,6 +83,16 @@ module.exports = function (grunt) {
       		target: 'es5', //or es3 or es6
       		sourceMap: true
       	}
+      },
+      watch: {
+      	src: ['<%= config.tssrc %>/*.ts', '<%= config.tstest %>/*.ts', 'typings/**/*.ts'],
+      	dest: 'test/spec/gen/', // TODO: require could resolve dependencies incorrect
+      	options: {
+        	module: 'amd', //or commonjs 
+      		target: 'es5', //or es3 or es6
+      		sourceMap: true,
+      		watch: ['<%= config.tssrc %>/*.ts', '<%= config.tstest %>/*.ts', 'typings/**/*.ts']
+      	}
       }
     },
     
