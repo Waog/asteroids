@@ -2,15 +2,12 @@
 
 // TODO: the only purpose of this class is to provide an interface for the tests.
 // remove this file as soon as test work properly and are used on production files.
-module Calculations {
+export class SimpleMath {
 
-    export class SimpleMath {
+    constructor() {
+    }
 
-        constructor() {
-        }
-
-        public addTwoNumbers(a: number, b: number): number {
-            return a + b;
-        }
+    public addTwoNumbers(a: number, b: number): number {
+        return a + b;
     }
 }

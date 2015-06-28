@@ -1,5 +1,5 @@
 build.path.exportedFolder=
-build.path.sourceFolder=app/ts;typings;test/spec
+build.path.sourceFolder=app/ts;typings;test/spec;test/lib
 compiler.codeGenTarget=ECMASCRIPT5
 compiler.compileOnSave=false
 compiler.generateDeclarationFiles=false

@@ -22,14 +22,11 @@ module.exports = function(config) {
 	        'bower_components/requirejs/require.js',
 	        // endbower
 
-	        'test/spec/**/*.js',
+	        'test/gen/**/*.js',
 	        
-	        {pattern: 'app/scripts/**/*.js', included: false},
-	        {pattern: 'app/scripts/**/*.js.map', included: false},
 	        {pattern: 'app/ts/**/*.ts', included: false},
-	        {pattern: 'test/spec/**/*.js.map', included: false},
-	        {pattern: 'test/spec/**/*.ts', included: false},
-	        {pattern: 'test/res/**/*', included: false}
+	        {pattern: 'test/gen/**/*.js.map', included: false},
+	        {pattern: 'test/**/*.ts', included: false}
 	    ],
 
 	    // list of files to exclude

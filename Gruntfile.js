@@ -21,7 +21,8 @@ module.exports = function (grunt) {
     app: 'app',
     dist: 'dist',
     tssrc: 'app/ts/**',
-    tstest: 'test/spec/**'
+    tstest: 'test/spec/**',
+    tstestlib: 'test/lib/**',
   };
 
   // Define the configuration for all the tasks
@@ -76,8 +77,11 @@ module.exports = function (grunt) {
         }
       },
       test: {
-      	src: ['<%= config.tssrc %>/*.ts', '<%= config.tstest %>/*.ts', 'typings/**/*.ts'],
-      	dest: 'test/spec/gen/', // TODO: require could resolve dependencies incorrect
+      	src: ['<%= config.tssrc %>/*.ts',
+      	      '<%= config.tstest %>/*.ts',
+      	      '<%= config.tstestlib %>/*.ts',
+      	      'typings/**/*.ts'],
+      	dest: 'test/gen/',
       	options: {
         	module: 'amd', //or commonjs 
       		target: 'es5', //or es3 or es6
@@ -115,7 +119,7 @@ module.exports = function (grunt) {
       },
       // run unit tests with karma (server needs to be already running)
       karma: {
-        files: ['app/scripts/**/*.js', 'test/spec/**/*.js'],
+        files: ['test/gen/**/*.js'],
         // TODO: is also run on 'debug' target, not only on 'continuous', which works for the moment
         tasks: ['karma:continuous:run'] // NOTE the :run flag
       },
@@ -198,7 +202,7 @@ module.exports = function (grunt) {
         '<%= config.app %>/scripts/{,*/}*.js',
         '!<%= config.app %>/scripts/vendor/*',
         '!<%= config.app %>/scripts/gen/*',
-        'test/spec/{,*/}*.js'
+        'test/{,*/}*.js'
       ]
     },
 
