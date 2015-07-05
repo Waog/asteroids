@@ -3,6 +3,7 @@ import SimpleMath = CalculationsFile.SimpleMath;
 import WaogTestFile = require('../../lib/WaogTest');
 import ClassTest = WaogTestFile.ClassTest;
 import ModuleTest = WaogTestFile.ModuleTest;
+import expect = WaogTestFile.expect;
 
 module Calculations {
 
